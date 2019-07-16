@@ -41,7 +41,7 @@ namespace sol {
 		: source(std::move(value)) {
 		}
 
-		operator std::add_rvalue_reference_t<T>() {
+		operator tao::add_rvalue_reference_t<T>() {
 			return std::move(source);
 		}
 
@@ -107,7 +107,7 @@ namespace sol {
 			typedef std::array<char, 2> two;
 
 			template <typename C>
-			static one test(decltype(std::declval<C>().erase_after(std::declval<std::add_rvalue_reference_t<typename C::const_iterator>>()))*);
+			static one test(decltype(std::declval<C>().erase_after(std::declval<tao::add_rvalue_reference_t<typename C::const_iterator>>()))*);
 			template <typename C>
 			static two test(...);
 
@@ -122,7 +122,7 @@ namespace sol {
 			typedef std::array<char, 2> two;
 
 			template <typename C>
-			static one test(decltype(std::declval<C>().find(std::declval<std::add_rvalue_reference_t<typename C::value_type>>()))*);
+			static one test(decltype(std::declval<C>().find(std::declval<tao::add_rvalue_reference_t<typename C::value_type>>()))*);
 			template <typename C>
 			static two test(...);
 
@@ -137,7 +137,7 @@ namespace sol {
 			typedef std::array<char, 2> two;
 
 			template <typename C>
-			static one test(decltype(std::declval<C>().find(std::declval<std::add_rvalue_reference_t<typename C::key_type>>()))*);
+			static one test(decltype(std::declval<C>().find(std::declval<tao::add_rvalue_reference_t<typename C::key_type>>()))*);
 			template <typename C>
 			static two test(...);
 
