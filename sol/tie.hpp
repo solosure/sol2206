@@ -88,8 +88,8 @@ namespace sol {
 
 	namespace adl_barrier_detail {
 		template <typename... Tn>
-		inline tie_t<std::remove_reference_t<Tn>...> tie(Tn&&... argn) {
-			return tie_t<std::remove_reference_t<Tn>...>(std::forward<Tn>(argn)...);
+		inline tie_t<tao::remove_reference_t<Tn>...> tie(Tn&&... argn) {
+			return tie_t<tao::remove_reference_t<Tn>...>(std::forward<Tn>(argn)...);
 		}
 	} // namespace adl_barrier_detail
 

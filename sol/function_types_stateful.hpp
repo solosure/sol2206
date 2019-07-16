@@ -95,7 +95,7 @@ namespace function_detail {
 		typedef typename meta::bind_traits<function_type>::args_list args_lists;
 		function_type var;
 		T member;
-		typedef std::add_lvalue_reference_t<meta::unwrapped_t<std::remove_reference_t<decltype(detail::deref(member))>>> M;
+		typedef std::add_lvalue_reference_t<meta::unwrapped_t<tao::remove_reference_t<decltype(detail::deref(member))>>> M;
 
 		template <typename... Args>
 		member_variable(function_type v, Args&&... args)
