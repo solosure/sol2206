@@ -36,12 +36,12 @@ namespace sol {
 		typedef meta::condition<meta::is_specialization_of<Key, std::tuple>, Key, std::tuple<meta::condition<std::is_array<meta::unqualified_t<Key>>, Key&, meta::unqualified_t<Key>>>> key_type;
 
 		template <typename T, std::size_t... I>
-		decltype(auto) tuple_get(std::index_sequence<I...>) const {
+		decltype(auto) tuple_get(tao::index_sequence<I...>) const {
 			return tbl.template traverse_get<T>(std::get<I>(key)...);
 		}
 
 		template <std::size_t... I, typename T>
-		void tuple_set(std::index_sequence<I...>, T&& value) {
+		void tuple_set(tao::index_sequence<I...>, T&& value) {
 			tbl.traverse_set(std::get<I>(key)..., std::forward<T>(value));
 		}
 

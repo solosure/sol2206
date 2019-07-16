@@ -96,7 +96,7 @@ namespace sol {
 		}
 
 		template <bool raw, typename Ret0, typename Ret1, typename... Ret, std::size_t... I, typename Keys>
-		auto tuple_get(types<Ret0, Ret1, Ret...>, std::index_sequence<0, 1, I...>, Keys&& keys) const
+		auto tuple_get(types<Ret0, Ret1, Ret...>, tao::index_sequence<0, 1, I...>, Keys&& keys) const
 			-> decltype(stack::pop<std::tuple<Ret0, Ret1, Ret...>>(nullptr)) {
 			typedef decltype(stack::pop<std::tuple<Ret0, Ret1, Ret...>>(nullptr)) Tup;
 			return Tup(
@@ -106,12 +106,12 @@ namespace sol {
 		}
 
 		template <bool raw, typename Ret, std::size_t I, typename Keys>
-		decltype(auto) tuple_get(types<Ret>, std::index_sequence<I>, Keys&& keys) const {
+		decltype(auto) tuple_get(types<Ret>, tao::index_sequence<I>, Keys&& keys) const {
 			return traverse_get_optional<top_level, raw, Ret>(meta::is_optional<meta::unqualified_t<Ret>>(), detail::forward_get<I>(keys));
 		}
 
 		template <bool raw, typename Pairs, std::size_t... I>
-		void tuple_set(std::index_sequence<I...>, Pairs&& pairs) {
+		void tuple_set(tao::index_sequence<I...>, Pairs&& pairs) {
 			auto pp = stack::push_pop < top_level && (is_global<decltype(detail::forward_get<I * 2>(pairs))...>::value) > (*this);
 			void(detail::swallow{ (stack::set_field<top_level, raw>(base_t::lua_state(),
 								   detail::forward_get<I * 2>(pairs),

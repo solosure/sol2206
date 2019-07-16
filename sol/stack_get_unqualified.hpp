@@ -861,16 +861,16 @@ namespace stack {
 		typedef std::tuple<decltype(stack::get<Tn>(nullptr, 0))...> R;
 
 		template <typename... Args>
-		static R apply(std::index_sequence<>, lua_State*, int, record&, Args&&... args) {
+		static R apply(tao::index_sequence<>, lua_State*, int, record&, Args&&... args) {
 			// Fuck you too, VC++
 			return R{ std::forward<Args>(args)... };
 		}
 
 		template <std::size_t I, std::size_t... Ix, typename... Args>
-		static R apply(std::index_sequence<I, Ix...>, lua_State* L, int index, record& tracking, Args&&... args) {
+		static R apply(tao::index_sequence<I, Ix...>, lua_State* L, int index, record& tracking, Args&&... args) {
 			// Fuck you too, VC++
 			typedef tao::tuple_element_t<I, std::tuple<Tn...>> T;
-			return apply(std::index_sequence<Ix...>(), L, index, tracking, std::forward<Args>(args)..., stack::get<T>(L, index + tracking.used, tracking));
+			return apply(tao::index_sequence<Ix...>(), L, index, tracking, std::forward<Args>(args)..., stack::get<T>(L, index + tracking.used, tracking));
 		}
 
 		static R get(lua_State* L, int index, record& tracking) {

@@ -399,9 +399,9 @@ namespace sol {
 	struct usertype_metatable : usertype_detail::registrar {};
 
 	template <typename T, std::size_t... I, typename... Tn>
-	struct usertype_metatable<T, std::index_sequence<I...>, Tn...> : usertype_metatable_core, usertype_detail::registrar {
+	struct usertype_metatable<T, tao::index_sequence<I...>, Tn...> : usertype_metatable_core, usertype_detail::registrar {
 		typedef std::make_index_sequence<sizeof...(I) * 2> indices;
-		typedef std::index_sequence<I...> half_indices;
+		typedef tao::index_sequence<I...> half_indices;
 		typedef std::array<luaL_Reg, sizeof...(Tn) / 2 + 1 + 31> regs_t;
 		typedef std::tuple<Tn...> RawTuple;
 		typedef std::tuple<clean_type_t<Tn>...> Tuple;
@@ -684,8 +684,8 @@ namespace sol {
 	namespace stack {
 
 		template <typename T, std::size_t... I, typename... Args>
-		struct pusher<usertype_metatable<T, std::index_sequence<I...>, Args...>> {
-			typedef usertype_metatable<T, std::index_sequence<I...>, Args...> umt_t;
+		struct pusher<usertype_metatable<T, tao::index_sequence<I...>, Args...>> {
+			typedef usertype_metatable<T, tao::index_sequence<I...>, Args...> umt_t;
 			typedef typename umt_t::regs_t regs_t;
 
 			static umt_t& make_cleanup(lua_State* L, umt_t&& umx) {

@@ -4,6 +4,9 @@
 // std::make_index_sequence
 //   to
 // tao::seq::make_index_sequence
+// std::index_sequence
+//   to
+// tao::seq::index_sequence
 #include "../tao/seq/make_integer_sequence.hpp"
 
 #endif
