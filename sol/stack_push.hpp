@@ -175,7 +175,7 @@ namespace stack {
 #endif
 			detail::default_construct::construct(mem, std::forward<Args>(args)...);
 			*pref = unique_usertype_traits<T>::get(*mem);
-			if (luaL_newmetatable(L, &usertype_traits<detail::unique_usertype<std::remove_cv_t<P>>>::metatable()[0]) == 1) {
+			if (luaL_newmetatable(L, &usertype_traits<detail::unique_usertype<tao::remove_cv_t<P>>>::metatable()[0]) == 1) {
 				luaL_Reg l[32]{};
 				int index = 0;
 				auto prop_fx = [](meta_function) { return true; };
