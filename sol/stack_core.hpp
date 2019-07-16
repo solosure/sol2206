@@ -627,7 +627,7 @@ namespace sol {
 
 			template <typename T, typename Handler>
 			bool check_usertype(std::true_type, lua_State* L, int index, type indextype, Handler&& handler, record& tracking) {
-				typedef meta::unqualified_t<std::remove_pointer_t<meta::unqualified_t<T>>> Tu;
+				typedef meta::unqualified_t<tao::remove_pointer_t<meta::unqualified_t<T>>> Tu;
 				typedef detail::as_pointer_tag<Tu> detail_t;
 				return checker<detail_t, type::userdata>{}.check(L, index, indextype, std::forward<Handler>(handler), tracking);
 			}
@@ -924,9 +924,9 @@ namespace sol {
 		template <typename T>
 		inline decltype(auto) get_usertype(lua_State* L, int index, record& tracking) {
 #if defined(SOL_SAFE_GETTER) && SOL_SAFE_GETTER
-			return stack_detail::tagged_get(types<std::conditional_t<std::is_pointer<T>::value, detail::as_pointer_tag<std::remove_pointer_t<T>>, detail::as_value_tag<T>>>(), L, index, tracking);
+			return stack_detail::tagged_get(types<std::conditional_t<std::is_pointer<T>::value, detail::as_pointer_tag<tao::remove_pointer_t<T>>, detail::as_value_tag<T>>>(), L, index, tracking);
 #else
-			return stack_detail::unchecked_get<std::conditional_t<std::is_pointer<T>::value, detail::as_pointer_tag<std::remove_pointer_t<T>>, detail::as_value_tag<T>>>(L, index, tracking);
+			return stack_detail::unchecked_get<std::conditional_t<std::is_pointer<T>::value, detail::as_pointer_tag<tao::remove_pointer_t<T>>, detail::as_value_tag<T>>>(L, index, tracking);
 #endif
 		}
 

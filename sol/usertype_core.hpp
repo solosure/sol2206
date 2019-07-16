@@ -249,7 +249,7 @@ namespace sol {
 		template <typename T>
 		struct undefined_metatable {
 			typedef meta::all<meta::neg<std::is_pointer<T>>, std::is_destructible<T>> is_destructible;
-			typedef std::remove_pointer_t<T> P;
+			typedef tao::remove_pointer_t<T> P;
 			lua_State* L;
 			const char* key;
 

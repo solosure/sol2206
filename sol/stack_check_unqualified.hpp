@@ -320,7 +320,7 @@ namespace stack {
 	template <typename C>
 	struct checker<lua_CFunction, type::function, C> : stack_detail::basic_check<type::function, lua_iscfunction> {};
 	template <typename C>
-	struct checker<std::remove_pointer_t<lua_CFunction>, type::function, C> : checker<lua_CFunction, type::function, C> {};
+	struct checker<tao::remove_pointer_t<lua_CFunction>, type::function, C> : checker<lua_CFunction, type::function, C> {};
 	template <typename C>
 	struct checker<c_closure, type::function, C> : checker<lua_CFunction, type::function, C> {};
 

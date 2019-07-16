@@ -45,7 +45,7 @@ namespace sol {
 		struct pusher<function_sig<Sigs...>> {
 			template <bool is_yielding, typename... Sig, typename Fx, typename... Args>
 			static void select_convertible(std::false_type, types<Sig...>, lua_State* L, Fx&& fx, Args&&... args) {
-				typedef std::remove_pointer_t<tao::decay_t<Fx>> clean_fx;
+				typedef tao::remove_pointer_t<tao::decay_t<Fx>> clean_fx;
 				typedef function_detail::functor_function<clean_fx, is_yielding, true> F;
 				set_fx<false, F>(L, std::forward<Fx>(fx), std::forward<Args>(args)...);
 			}
@@ -73,7 +73,7 @@ namespace sol {
 
 			template <bool is_yielding, typename Fx, typename T, typename... Args>
 			static void select_reference_member_variable(std::false_type, lua_State* L, Fx&& fx, T&& obj, Args&&... args) {
-				typedef std::remove_pointer_t<tao::decay_t<Fx>> clean_fx;
+				typedef tao::remove_pointer_t<tao::decay_t<Fx>> clean_fx;
 				typedef function_detail::member_variable<meta::unwrap_unqualified_t<T>, clean_fx, is_yielding> F;
 				set_fx<false, F>(L, std::forward<Fx>(fx), std::forward<T>(obj), std::forward<Args>(args)...);
 			}
@@ -209,7 +209,7 @@ namespace sol {
 
 			template <bool is_yielding, typename Fx, typename... Args, meta::disable<is_lua_reference<meta::unqualified_t<Fx>>> = meta::enabler>
 			static void select(lua_State* L, Fx&& fx, Args&&... args) {
-				select_function<is_yielding>(std::is_function<std::remove_pointer_t<meta::unqualified_t<Fx>>>(), L, std::forward<Fx>(fx), std::forward<Args>(args)...);
+				select_function<is_yielding>(std::is_function<tao::remove_pointer_t<meta::unqualified_t<Fx>>>(), L, std::forward<Fx>(fx), std::forward<Args>(args)...);
 			}
 
 			template <bool is_yielding, typename Fx, meta::enable<is_lua_reference<meta::unqualified_t<Fx>>> = meta::enabler>
@@ -298,10 +298,10 @@ namespace sol {
 		};
 
 		template <typename Signature>
-		struct pusher<Signature, std::enable_if_t<meta::all<std::is_function<std::remove_pointer_t<Signature>>, meta::neg<std::is_same<Signature, lua_CFunction>>, meta::neg<std::is_same<Signature, std::remove_pointer_t<lua_CFunction>>>
+		struct pusher<Signature, std::enable_if_t<meta::all<std::is_function<tao::remove_pointer_t<Signature>>, meta::neg<std::is_same<Signature, lua_CFunction>>, meta::neg<std::is_same<Signature, tao::remove_pointer_t<lua_CFunction>>>
 #if defined(SOL_NOEXCEPT_FUNCTION_TYPE) && SOL_NOEXCEPT_FUNCTION_TYPE
 			,
-								meta::neg<std::is_same<Signature, detail::lua_CFunction_noexcept>>, meta::neg<std::is_same<Signature, std::remove_pointer_t<detail::lua_CFunction_noexcept>>>
+								meta::neg<std::is_same<Signature, detail::lua_CFunction_noexcept>>, meta::neg<std::is_same<Signature, tao::remove_pointer_t<detail::lua_CFunction_noexcept>>>
 #endif // noexcept function types
 								>::value>> {
 			template <typename F>
@@ -464,7 +464,7 @@ namespace sol {
 			template <typename C>
 			static int push(lua_State* L, C&& c) {
 				typedef typename meta::bind_traits<F>::template arg_at<0> arg0;
-				typedef meta::unqualified_t<std::remove_pointer_t<arg0>> T;
+				typedef meta::unqualified_t<tao::remove_pointer_t<arg0>> T;
 				return stack::push<detail::tagged<T, constructor_wrapper<F, Fxs...>>>(L, std::forward<C>(c));
 			}
 		};

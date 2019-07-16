@@ -150,7 +150,7 @@ namespace sol {
 		return yielding_t<tao::decay_t<F>>(std::forward<F>(f));
 	}
 
-	typedef std::remove_pointer_t<lua_CFunction> lua_CFunction_ref;
+	typedef tao::remove_pointer_t<lua_CFunction> lua_CFunction_ref;
 
 	template <typename T>
 	struct unique_usertype_traits {
@@ -312,7 +312,7 @@ namespace sol {
 
 	template <typename T>
 	auto make_light(T& l) {
-		typedef meta::unwrapped_t<std::remove_pointer_t<std::remove_pointer_t<T>>> L;
+		typedef meta::unwrapped_t<tao::remove_pointer_t<tao::remove_pointer_t<T>>> L;
 		return light<L>(l);
 	}
 
@@ -962,7 +962,7 @@ namespace sol {
 		struct lua_type_of<lua_CFunction> : std::integral_constant<type, type::function> {};
 
 		template <>
-		struct lua_type_of<std::remove_pointer_t<lua_CFunction>> : std::integral_constant<type, type::function> {};
+		struct lua_type_of<tao::remove_pointer_t<lua_CFunction>> : std::integral_constant<type, type::function> {};
 
 		template <typename Base, bool aligned>
 		struct lua_type_of<basic_function<Base, aligned>> : std::integral_constant<type, type::function> {};

@@ -646,7 +646,7 @@ namespace sol {
 			static int self_call(std::false_type, lua_State* L, F&& f) {
 				typedef meta::pop_front_type_t<typename traits_type::free_args_list> args_list;
 				typedef T Ta;
-				typedef std::remove_pointer_t<object_type> Oa;
+				typedef tao::remove_pointer_t<object_type> Oa;
 #if defined(SOL_SAFE_USERTYPE) && SOL_SAFE_USERTYPE
 				auto maybeo = stack::check_get<Ta*>(L, 1);
 				if (!maybeo || maybeo.value() == nullptr) {

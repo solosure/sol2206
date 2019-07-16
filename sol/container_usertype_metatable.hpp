@@ -32,7 +32,7 @@ namespace sol {
 
 	template <typename X>
 	struct container_usertype_metatable {
-		typedef std::remove_pointer_t<meta::unqualified_t<X>> T;
+		typedef tao::remove_pointer_t<meta::unqualified_t<X>> T;
 		typedef container_traits<T> traits;
 		typedef container_detail::container_traits_default<T> default_traits;
 
@@ -317,10 +317,10 @@ namespace sol {
 
 				void operator()() {
 					typedef container_usertype_metatable<std::conditional_t<is_shim,
-						as_container_t<std::remove_pointer_t<T>>,
-						std::remove_pointer_t<T>>>
+						as_container_t<tao::remove_pointer_t<T>>,
+						tao::remove_pointer_t<T>>>
 						meta_cumt;
-					static const char* metakey = is_shim ? &usertype_traits<as_container_t<std::remove_pointer_t<T>>>::metatable()[0] : &usertype_traits<T>::metatable()[0];
+					static const char* metakey = is_shim ? &usertype_traits<as_container_t<tao::remove_pointer_t<T>>>::metatable()[0] : &usertype_traits<T>::metatable()[0];
 					static const std::array<luaL_Reg, 19> reg = { { 
 						{ "__pairs", &meta_cumt::pairs_call },
 						{ "__ipairs", &meta_cumt::ipairs_call },
@@ -385,7 +385,7 @@ namespace sol {
 
 		template <typename T>
 		struct pusher<as_container_t<T*>> {
-			typedef std::add_pointer_t<meta::unqualified_t<std::remove_pointer_t<T>>> C;
+			typedef std::add_pointer_t<meta::unqualified_t<tao::remove_pointer_t<T>>> C;
 
 			static int push(lua_State* L, T* cont) {
 				stack_detail::metatable_setup<C> fx(L);
@@ -410,7 +410,7 @@ namespace sol {
 
 		template <typename T>
 		struct pusher<T*, std::enable_if_t<meta::all<is_container<meta::unqualified_t<T>>, meta::neg<is_lua_reference<meta::unqualified_t<T>>>>::value>> {
-			typedef std::add_pointer_t<meta::unqualified_t<std::remove_pointer_t<T>>> C;
+			typedef std::add_pointer_t<meta::unqualified_t<tao::remove_pointer_t<T>>> C;
 
 			static int push(lua_State* L, T* cont) {
 				stack_detail::metatable_setup<C> fx(L);

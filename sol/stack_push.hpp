@@ -252,17 +252,17 @@ namespace stack {
 	template <typename T>
 	struct pusher<detail::as_table_tag<T>> {
 		static int push(lua_State* L, const T& tablecont) {
-			typedef meta::has_key_value_pair<meta::unqualified_t<std::remove_pointer_t<T>>> has_kvp;
+			typedef meta::has_key_value_pair<meta::unqualified_t<tao::remove_pointer_t<T>>> has_kvp;
 			return push(has_kvp(), std::false_type(), L, tablecont);
 		}
 
 		static int push(std::true_type, lua_State* L, const T& tablecont) {
-			typedef meta::has_key_value_pair<meta::unqualified_t<std::remove_pointer_t<T>>> has_kvp;
+			typedef meta::has_key_value_pair<meta::unqualified_t<tao::remove_pointer_t<T>>> has_kvp;
 			return push(has_kvp(), std::true_type(), L, tablecont);
 		}
 
 		static int push(std::false_type, lua_State* L, const T& tablecont) {
-			typedef meta::has_key_value_pair<meta::unqualified_t<std::remove_pointer_t<T>>> has_kvp;
+			typedef meta::has_key_value_pair<meta::unqualified_t<tao::remove_pointer_t<T>>> has_kvp;
 			return push(has_kvp(), std::false_type(), L, tablecont);
 		}
 
@@ -321,21 +321,21 @@ namespace stack {
 	};
 
 	template <typename T>
-	struct pusher<as_table_t<T>, std::enable_if_t<is_container<std::remove_pointer_t<meta::unwrap_unqualified_t<T>>>::value>> {
+	struct pusher<as_table_t<T>, std::enable_if_t<is_container<tao::remove_pointer_t<meta::unwrap_unqualified_t<T>>>::value>> {
 		static int push(lua_State* L, const T& tablecont) {
 			return stack::push<detail::as_table_tag<T>>(L, tablecont);
 		}
 	};
 
 	template <typename T>
-	struct pusher<as_table_t<T>, std::enable_if_t<!is_container<std::remove_pointer_t<meta::unwrap_unqualified_t<T>>>::value>> {
+	struct pusher<as_table_t<T>, std::enable_if_t<!is_container<tao::remove_pointer_t<meta::unwrap_unqualified_t<T>>>::value>> {
 		static int push(lua_State* L, const T& v) {
 			return stack::push(L, v);
 		}
 	};
 
 	template <typename T>
-	struct pusher<nested<T>, std::enable_if_t<is_container<std::remove_pointer_t<meta::unwrap_unqualified_t<T>>>::value>> {
+	struct pusher<nested<T>, std::enable_if_t<is_container<tao::remove_pointer_t<meta::unwrap_unqualified_t<T>>>::value>> {
 		static int push(lua_State* L, const T& tablecont) {
 			pusher<detail::as_table_tag<T>> p{};
 			// silence annoying VC++ warning
@@ -345,7 +345,7 @@ namespace stack {
 	};
 
 	template <typename T>
-	struct pusher<nested<T>, std::enable_if_t<!is_container<std::remove_pointer_t<meta::unwrap_unqualified_t<T>>>::value>> {
+	struct pusher<nested<T>, std::enable_if_t<!is_container<tao::remove_pointer_t<meta::unwrap_unqualified_t<T>>>::value>> {
 		static int push(lua_State* L, const T& tablecont) {
 			pusher<meta::unqualified_t<T>> p{};
 			// silence annoying VC++ warning
@@ -407,7 +407,7 @@ namespace stack {
 	};
 
 	template <>
-	struct pusher<std::remove_pointer_t<lua_CFunction>> {
+	struct pusher<tao::remove_pointer_t<lua_CFunction>> {
 		static int push(lua_State* L, lua_CFunction func, int n = 0) {
 			lua_pushcclosure(L, func, n);
 			return 1;
@@ -424,7 +424,7 @@ namespace stack {
 
 #if defined(SOL_NOEXCEPT_FUNCTION_TYPE) && SOL_NOEXCEPT_FUNCTION_TYPE
 	template <>
-	struct pusher<std::remove_pointer_t<detail::lua_CFunction_noexcept>> {
+	struct pusher<tao::remove_pointer_t<detail::lua_CFunction_noexcept>> {
 		static int push(lua_State* L, detail::lua_CFunction_noexcept func, int n = 0) {
 			lua_pushcclosure(L, func, n);
 			return 1;

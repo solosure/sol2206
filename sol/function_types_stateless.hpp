@@ -30,7 +30,7 @@ namespace sol {
 namespace function_detail {
 	template <typename Function, bool is_yielding>
 	struct upvalue_free_function {
-		typedef std::remove_pointer_t<tao::decay_t<Function>> function_type;
+		typedef tao::remove_pointer_t<tao::decay_t<Function>> function_type;
 		typedef meta::bind_traits<function_type> traits_type;
 
 		static int real_call(lua_State* L) noexcept(traits_type::is_noexcept) {
@@ -56,7 +56,7 @@ namespace function_detail {
 
 	template <typename T, typename Function, bool is_yielding>
 	struct upvalue_member_function {
-		typedef std::remove_pointer_t<tao::decay_t<Function>> function_type;
+		typedef tao::remove_pointer_t<tao::decay_t<Function>> function_type;
 		typedef lua_bind_traits<function_type> traits_type;
 
 		static int real_call(lua_State* L) noexcept(traits_type::is_noexcept) {
@@ -89,7 +89,7 @@ namespace function_detail {
 
 	template <typename T, typename Function, bool is_yielding>
 	struct upvalue_member_variable {
-		typedef std::remove_pointer_t<tao::decay_t<Function>> function_type;
+		typedef tao::remove_pointer_t<tao::decay_t<Function>> function_type;
 		typedef lua_bind_traits<function_type> traits_type;
 
 		static int real_call(lua_State* L) noexcept(traits_type::is_noexcept) {
@@ -129,7 +129,7 @@ namespace function_detail {
 
 	template <typename T, typename Function, bool is_yielding>
 	struct upvalue_member_variable<T, readonly_wrapper<Function>, is_yielding> {
-		typedef std::remove_pointer_t<tao::decay_t<Function>> function_type;
+		typedef tao::remove_pointer_t<tao::decay_t<Function>> function_type;
 		typedef lua_bind_traits<function_type> traits_type;
 
 		static int real_call(lua_State* L) noexcept(traits_type::is_noexcept) {
@@ -167,7 +167,7 @@ namespace function_detail {
 
 	template <typename T, typename Function, bool is_yielding>
 	struct upvalue_this_member_function {
-		typedef std::remove_pointer_t<tao::decay_t<Function>> function_type;
+		typedef tao::remove_pointer_t<tao::decay_t<Function>> function_type;
 		typedef lua_bind_traits<function_type> traits_type;
 
 		static int real_call(lua_State* L) noexcept(traits_type::is_noexcept) {
@@ -195,7 +195,7 @@ namespace function_detail {
 
 	template <typename T, typename Function, bool is_yielding>
 	struct upvalue_this_member_variable {
-		typedef std::remove_pointer_t<tao::decay_t<Function>> function_type;
+		typedef tao::remove_pointer_t<tao::decay_t<Function>> function_type;
 
 		static int real_call(lua_State* L) noexcept(false) {
 			// Layout:
@@ -229,7 +229,7 @@ namespace function_detail {
 
 	template <typename T, typename Function, bool is_yielding>
 	struct upvalue_this_member_variable<T, readonly_wrapper<Function>, is_yielding> {
-		typedef std::remove_pointer_t<tao::decay_t<Function>> function_type;
+		typedef tao::remove_pointer_t<tao::decay_t<Function>> function_type;
 		typedef lua_bind_traits<function_type> traits_type;
 
 		static int real_call(lua_State* L) noexcept(false) {
