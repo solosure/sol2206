@@ -72,7 +72,7 @@ namespace sol {
 			{
 #if defined(SOL_UNORDERED_MAP_COMPATIBLE_HASH) && SOL_UNORDERED_MAP_COMPATIBLE_HASH
 				string_view& accessorkey = accessor;
-				auto vit = variables.find(accessorkey, string_view_hash(), std::equal_to<string_view>());
+				auto vit = variables.find(accessorkey, string_view_hash(), tao::equal_to<string_view>());
 #else
 				std::string accessorkey(accessor.data(), accessor.size());
 				auto vit = variables.find(accessorkey);
@@ -88,7 +88,7 @@ namespace sol {
 			{
 #if defined(SOL_UNORDERED_MAP_COMPATIBLE_HASH) && SOL_UNORDERED_MAP_COMPATIBLE_HASH
 				string_view& accessorkey = accessor;
-				auto fit = functions.find(accessorkey, string_view_hash(), std::equal_to<string_view>());
+				auto fit = functions.find(accessorkey, string_view_hash(), tao::equal_to<string_view>());
 #else
 				std::string accessorkey(accessor.data(), accessor.size());
 				auto fit = functions.find(accessorkey);

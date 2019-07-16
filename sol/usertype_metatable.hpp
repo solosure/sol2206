@@ -256,7 +256,7 @@ namespace sol {
 						}
 						string_view& accessor_view = maybeaccessor.value();
 #if defined(SOL_UNORDERED_MAP_COMPATIBLE_HASH) && SOL_UNORDERED_MAP_COMPATIBLE_HASH
-						auto preexistingit = functions.find(accessor_view, string_view_hash(), std::equal_to<string_view>());
+						auto preexistingit = functions.find(accessor_view, string_view_hash(), tao::equal_to<string_view>());
 #else
 						std::string accessor(accessor_view.data(), accessor_view.size());
 						auto preexistingit = functions.find(accessor);
@@ -285,7 +285,7 @@ namespace sol {
 					std::vector<object>& runtime = umc.runtime;
 					int target = static_cast<int>(runtime.size());
 #if defined(SOL_UNORDERED_MAP_COMPATIBLE_HASH) && SOL_UNORDERED_MAP_COMPATIBLE_HASH
-					auto preexistingit = mapping.find(accessor_view, string_view_hash(), std::equal_to<string_view>());
+					auto preexistingit = mapping.find(accessor_view, string_view_hash(), tao::equal_to<string_view>());
 #else
 					std::string accessor(accessor_view.data(), accessor_view.size());
 					auto preexistingit = mapping.find(accessor);
@@ -579,7 +579,7 @@ namespace sol {
 			{
 #if defined(SOL_UNORDERED_MAP_COMPATIBLE_HASH) && SOL_UNORDERED_MAP_COMPATIBLE_HASH
 				string_view name = stack::get<string_view>(L, keyidx);
-				auto memberit = f.mapping.find(name, string_view_hash(), std::equal_to<string_view>());
+				auto memberit = f.mapping.find(name, string_view_hash(), tao::equal_to<string_view>());
 #else
 				std::string name = stack::get<std::string>(L, keyidx);
 				auto memberit = f.mapping.find(name);

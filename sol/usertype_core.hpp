@@ -221,7 +221,7 @@ namespace sol {
 			}
 			if (fx(meta_function::equal_to)) {
 				const char* name = to_string(meta_function::equal_to).c_str();
-				usertype_detail::make_reg_op<T, tao::conditional_t<meta::supports_op_equal<T>::value, std::equal_to<>, usertype_detail::no_comp>, std::true_type>(l, index, name);
+				usertype_detail::make_reg_op<T, tao::conditional_t<meta::supports_op_equal<T>::value, tao::equal_to<>, usertype_detail::no_comp>, std::true_type>(l, index, name);
 			}
 			if (fx(meta_function::pairs)) {
 				const char* name = to_string(meta_function::pairs).c_str();
