@@ -118,7 +118,7 @@ namespace stack {
 	template <typename... Args, bool b, bool raw, typename C>
 	struct field_getter<std::tuple<Args...>, b, raw, C> {
 		template <std::size_t... I, typename Keys>
-		void apply(tao::index_sequence<0, I...>, lua_State* L, Keys&& keys, int tableindex) {
+		void apply(tao::seq::index_sequence<0, I...>, lua_State* L, Keys&& keys, int tableindex) {
 			get_field<b, raw>(L, detail::forward_get<0>(keys), tableindex);
 			void(detail::swallow{(get_field<false, raw>(L, detail::forward_get<I>(keys)), 0)...});
 			reference saved(L, -1);
@@ -239,19 +239,19 @@ namespace stack {
 	template <typename... Args, bool b, bool raw, typename C>
 	struct field_setter<std::tuple<Args...>, b, raw, C> {
 		template <bool g, std::size_t I, typename Key, typename Value>
-		void apply(tao::index_sequence<I>, lua_State* L, Key&& keys, Value&& value, int tableindex) {
+		void apply(tao::seq::index_sequence<I>, lua_State* L, Key&& keys, Value&& value, int tableindex) {
 			I < 1 ? set_field<g, raw>(L, detail::forward_get<I>(keys), std::forward<Value>(value), tableindex) : set_field<g, raw>(L, detail::forward_get<I>(keys), std::forward<Value>(value));
 		}
 
 		template <bool g, std::size_t I0, std::size_t I1, std::size_t... I, typename Keys, typename Value>
-		void apply(tao::index_sequence<I0, I1, I...>, lua_State* L, Keys&& keys, Value&& value, int tableindex) {
+		void apply(tao::seq::index_sequence<I0, I1, I...>, lua_State* L, Keys&& keys, Value&& value, int tableindex) {
 			I0 < 1 ? get_field<g, raw>(L, detail::forward_get<I0>(keys), tableindex) : get_field<g, raw>(L, detail::forward_get<I0>(keys), -1);
-			apply<false>(tao::index_sequence<I1, I...>(), L, std::forward<Keys>(keys), std::forward<Value>(value), -1);
+			apply<false>(tao::seq::index_sequence<I1, I...>(), L, std::forward<Keys>(keys), std::forward<Value>(value), -1);
 		}
 
 		template <bool g, std::size_t I0, std::size_t... I, typename Keys, typename Value>
-		void top_apply(tao::index_sequence<I0, I...>, lua_State* L, Keys&& keys, Value&& value, int tableindex) {
-			apply<g>(tao::index_sequence<I0, I...>(), L, std::forward<Keys>(keys), std::forward<Value>(value), tableindex);
+		void top_apply(tao::seq::index_sequence<I0, I...>, lua_State* L, Keys&& keys, Value&& value, int tableindex) {
+			apply<g>(tao::seq::index_sequence<I0, I...>(), L, std::forward<Keys>(keys), std::forward<Value>(value), tableindex);
 			lua_pop(L, static_cast<int>(sizeof...(I)));
 		}
 

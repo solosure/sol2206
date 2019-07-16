@@ -50,23 +50,23 @@ namespace sol {
 		}
 
 		template <std::size_t... I, typename... Ret>
-		auto invoke(types<Ret...>, tao::index_sequence<I...>, std::ptrdiff_t n) {
+		auto invoke(types<Ret...>, tao::seq::index_sequence<I...>, std::ptrdiff_t n) {
 			luacall(n, sizeof...(Ret));
 			return stack::pop<std::tuple<Ret...>>(lua_state());
 		}
 
 		template <std::size_t I, typename Ret>
-		Ret invoke(types<Ret>, tao::index_sequence<I>, std::ptrdiff_t n) {
+		Ret invoke(types<Ret>, tao::seq::index_sequence<I>, std::ptrdiff_t n) {
 			luacall(n, 1);
 			return stack::pop<Ret>(lua_state());
 		}
 
 		template <std::size_t I>
-		void invoke(types<void>, tao::index_sequence<I>, std::ptrdiff_t n) {
+		void invoke(types<void>, tao::seq::index_sequence<I>, std::ptrdiff_t n) {
 			luacall(n, 0);
 		}
 
-		protected_function_result invoke(types<>, tao::index_sequence<>, std::ptrdiff_t n) {
+		protected_function_result invoke(types<>, tao::seq::index_sequence<>, std::ptrdiff_t n) {
 			int firstreturn = 1;
 			luacall(n, LUA_MULTRET);
 			int poststacksize = lua_gettop(this->lua_state());

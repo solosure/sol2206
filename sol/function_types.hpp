@@ -263,7 +263,7 @@ namespace sol {
 		template <typename T, typename... Args>
 		struct pusher<function_arguments<T, Args...>> {
 			template <std::size_t... I, typename FP>
-			static int push_func(tao::index_sequence<I...>, lua_State* L, FP&& fp) {
+			static int push_func(tao::seq::index_sequence<I...>, lua_State* L, FP&& fp) {
 				return stack::push<T>(L, detail::forward_get<I>(fp.arguments)...);
 			}
 

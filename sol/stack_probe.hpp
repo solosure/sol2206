@@ -61,18 +61,18 @@ namespace stack {
 	template <typename... Args, typename P, bool b, bool raw, typename C>
 	struct probe_field_getter<std::tuple<Args...>, P, b, raw, C> {
 		template <std::size_t I, typename Keys>
-		probe apply(tao::index_sequence<I>, int sofar, lua_State* L, Keys&& keys, int tableindex) {
+		probe apply(tao::seq::index_sequence<I>, int sofar, lua_State* L, Keys&& keys, int tableindex) {
 			get_field < I<1 && b, raw>(L, std::get<I>(keys), tableindex);
 			return probe(check<P>(L), sofar);
 		}
 
 		template <std::size_t I, std::size_t I1, std::size_t... In, typename Keys>
-		probe apply(tao::index_sequence<I, I1, In...>, int sofar, lua_State* L, Keys&& keys, int tableindex) {
+		probe apply(tao::seq::index_sequence<I, I1, In...>, int sofar, lua_State* L, Keys&& keys, int tableindex) {
 			get_field < I<1 && b, raw>(L, std::get<I>(keys), tableindex);
 			if (!maybe_indexable(L)) {
 				return probe(false, sofar);
 			}
-			return apply(tao::index_sequence<I1, In...>(), sofar + 1, L, std::forward<Keys>(keys), -1);
+			return apply(tao::seq::index_sequence<I1, In...>(), sofar + 1, L, std::forward<Keys>(keys), -1);
 		}
 
 		template <typename Keys>
@@ -80,7 +80,7 @@ namespace stack {
 			if (!b && !maybe_indexable(L, tableindex)) {
 				return probe(false, 0);
 			}
-			return apply(tao::index_sequence_for<Args...>(), 1, L, std::forward<Keys>(keys), tableindex);
+			return apply(tao::seq::index_sequence_for<Args...>(), 1, L, std::forward<Keys>(keys), tableindex);
 		}
 	};
 }

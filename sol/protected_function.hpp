@@ -54,24 +54,24 @@ namespace sol {
 		}
 
 		template <std::size_t... I, bool b, typename... Ret>
-		auto invoke(types<Ret...>, tao::index_sequence<I...>, std::ptrdiff_t n, detail::protected_handler<b, handler_t>& h) const {
+		auto invoke(types<Ret...>, tao::seq::index_sequence<I...>, std::ptrdiff_t n, detail::protected_handler<b, handler_t>& h) const {
 			luacall(n, sizeof...(Ret), h);
 			return stack::pop<std::tuple<Ret...>>(lua_state());
 		}
 
 		template <std::size_t I, bool b, typename Ret>
-		Ret invoke(types<Ret>, tao::index_sequence<I>, std::ptrdiff_t n, detail::protected_handler<b, handler_t>& h) const {
+		Ret invoke(types<Ret>, tao::seq::index_sequence<I>, std::ptrdiff_t n, detail::protected_handler<b, handler_t>& h) const {
 			luacall(n, 1, h);
 			return stack::pop<Ret>(lua_state());
 		}
 
 		template <std::size_t I, bool b>
-		void invoke(types<void>, tao::index_sequence<I>, std::ptrdiff_t n, detail::protected_handler<b, handler_t>& h) const {
+		void invoke(types<void>, tao::seq::index_sequence<I>, std::ptrdiff_t n, detail::protected_handler<b, handler_t>& h) const {
 			luacall(n, 0, h);
 		}
 
 		template <bool b>
-		protected_function_result invoke(types<>, tao::index_sequence<>, std::ptrdiff_t n, detail::protected_handler<b, handler_t>& h) const {
+		protected_function_result invoke(types<>, tao::seq::index_sequence<>, std::ptrdiff_t n, detail::protected_handler<b, handler_t>& h) const {
 			int stacksize = lua_gettop(lua_state());
 			int poststacksize = stacksize;
 			int firstreturn = 1;

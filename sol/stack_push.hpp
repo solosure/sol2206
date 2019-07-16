@@ -451,7 +451,7 @@ namespace stack {
 	template <typename Arg, typename... Args>
 	struct pusher<closure<Arg, Args...>> {
 		template <std::size_t... I, typename T>
-		static int push(tao::index_sequence<I...>, lua_State* L, T&& c) {
+		static int push(tao::seq::index_sequence<I...>, lua_State* L, T&& c) {
 			int pushcount = multi_push(L, detail::forward_get<I>(c.upvalues)...);
 			return stack::push(L, c_closure(c.c_function, pushcount));
 		}
@@ -961,7 +961,7 @@ namespace stack {
 	template <typename... Args>
 	struct pusher<std::tuple<Args...>> {
 		template <std::size_t... I, typename T>
-		static int push(tao::index_sequence<I...>, lua_State* L, T&& t) {
+		static int push(tao::seq::index_sequence<I...>, lua_State* L, T&& t) {
 			int pushcount = 0;
 			(void)detail::swallow{ 0, (pushcount += stack::push(L, detail::forward_get<I>(t)), 0)... };
 			return pushcount;
@@ -969,7 +969,7 @@ namespace stack {
 
 		template <typename T>
 		static int push(lua_State* L, T&& t) {
-			return push(tao::index_sequence_for<Args...>(), L, std::forward<T>(t));
+			return push(tao::seq::index_sequence_for<Args...>(), L, std::forward<T>(t));
 		}
 	};
 

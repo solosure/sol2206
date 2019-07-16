@@ -344,7 +344,7 @@ namespace sol {
 
 	private:
 		template <std::size_t... I, typename Tuple>
-		simple_usertype_metatable(detail::verified_tag, tao::index_sequence<I...>, lua_State* L, Tuple&& args)
+		simple_usertype_metatable(detail::verified_tag, tao::seq::index_sequence<I...>, lua_State* L, Tuple&& args)
 		: callconstructfunc(lua_nil), indexfunc(lua_nil), newindexfunc(lua_nil), indexbase(&usertype_detail::simple_core_indexing_call<T, true>), newindexbase(&usertype_detail::simple_core_indexing_call<T, false>), indexbaseclasspropogation(usertype_detail::walk_all_bases<true>), newindexbaseclasspropogation(&usertype_detail::walk_all_bases<false>), baseclasscheck(nullptr), baseclasscast(nullptr), mustindex(false), secondarymeta(false), properties() {
 			properties.fill(false);
 

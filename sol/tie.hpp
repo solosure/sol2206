@@ -59,14 +59,14 @@ namespace sol {
 		}
 
 		template <std::size_t... I, typename T>
-		void set_extra(std::true_type, tao::index_sequence<I...>, T&& target) {
+		void set_extra(std::true_type, tao::seq::index_sequence<I...>, T&& target) {
 			using std::get;
 			(void)detail::swallow{0,
 				(get<I>(static_cast<base_t&>(*this)) = get<I>(types<Tn...>(), target), 0)..., 0};
 		}
 
 		template <std::size_t... I, typename T>
-		void set_extra(std::false_type, tao::index_sequence<I...>, T&& target) {
+		void set_extra(std::false_type, tao::seq::index_sequence<I...>, T&& target) {
 			using std::get;
 			(void)detail::swallow{0,
 				(get<I>(static_cast<base_t&>(*this)) = get<I>(target), 0)..., 0};
