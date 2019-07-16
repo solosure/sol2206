@@ -323,7 +323,7 @@ namespace sol {
 		user(U&& x)
 		: value(std::forward<U>(x)) {
 		}
-		operator std::add_pointer_t<tao::remove_reference_t<U>>() {
+		operator tao::add_pointer_t<tao::remove_reference_t<U>>() {
 			return std::addressof(value);
 		}
 		operator tao::add_lvalue_reference_t<U>() {

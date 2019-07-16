@@ -385,7 +385,7 @@ namespace sol {
 
 		template <typename T>
 		struct pusher<as_container_t<T*>> {
-			typedef std::add_pointer_t<meta::unqualified_t<tao::remove_pointer_t<T>>> C;
+			typedef tao::add_pointer_t<meta::unqualified_t<tao::remove_pointer_t<T>>> C;
 
 			static int push(lua_State* L, T* cont) {
 				stack_detail::metatable_setup<C> fx(L);
@@ -410,7 +410,7 @@ namespace sol {
 
 		template <typename T>
 		struct pusher<T*, tao::enable_if_t<meta::all<is_container<meta::unqualified_t<T>>, meta::neg<is_lua_reference<meta::unqualified_t<T>>>>::value>> {
-			typedef std::add_pointer_t<meta::unqualified_t<tao::remove_pointer_t<T>>> C;
+			typedef tao::add_pointer_t<meta::unqualified_t<tao::remove_pointer_t<T>>> C;
 
 			static int push(lua_State* L, T* cont) {
 				stack_detail::metatable_setup<C> fx(L);
