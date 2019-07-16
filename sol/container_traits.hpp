@@ -569,27 +569,27 @@ namespace sol {
 			typedef meta::is_matched_lookup<T> is_matched_lookup;
 			typedef typename T::iterator iterator;
 			typedef typename T::value_type value_type;
-			typedef std::conditional_t<is_matched_lookup::value,
+			typedef tao::conditional_t<is_matched_lookup::value,
 				std::pair<value_type, value_type>,
-				std::conditional_t<is_associative::value || is_lookup::value,
+				tao::conditional_t<is_associative::value || is_lookup::value,
 					value_type,
 					std::pair<std::ptrdiff_t, value_type>
 				>
 			> KV;
 			typedef typename KV::first_type K;
 			typedef typename KV::second_type V;
-			typedef std::conditional_t<is_matched_lookup::value, std::ptrdiff_t, K> next_K;
+			typedef tao::conditional_t<is_matched_lookup::value, std::ptrdiff_t, K> next_K;
 			typedef decltype(*std::declval<iterator&>()) iterator_return;
-			typedef std::conditional_t<is_associative::value || is_matched_lookup::value,
+			typedef tao::conditional_t<is_associative::value || is_matched_lookup::value,
 				std::add_lvalue_reference_t<V>,
-				std::conditional_t<is_lookup::value,
+				tao::conditional_t<is_lookup::value,
 					V,
 					iterator_return
 				>
 			> captured_type;
 			typedef typename meta::iterator_tag<iterator>::type iterator_category;
 			typedef std::is_same<iterator_category, std::input_iterator_tag> is_input_iterator;
-			typedef std::conditional_t<is_input_iterator::value,
+			typedef tao::conditional_t<is_input_iterator::value,
 				V,
 				decltype(detail::deref_non_pointer(std::declval<captured_type>()))
 			> push_type;

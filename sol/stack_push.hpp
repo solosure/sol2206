@@ -990,7 +990,7 @@ namespace stack {
 			if (t == nullopt) {
 				return stack::push(L, nullopt);
 			}
-			return stack::push(L, static_cast<std::conditional_t<std::is_lvalue_reference<T>::value, O&, O&&>>(t.value()));
+			return stack::push(L, static_cast<tao::conditional_t<std::is_lvalue_reference<T>::value, O&, O&&>>(t.value()));
 		}
 	};
 
@@ -1038,7 +1038,7 @@ namespace stack {
 			if (t == std::nullopt) {
 				return stack::push(L, nullopt);
 			}
-			return stack::push(L, static_cast<std::conditional_t<std::is_lvalue_reference<T>::value, O&, O&&>>(t.value()));
+			return stack::push(L, static_cast<tao::conditional_t<std::is_lvalue_reference<T>::value, O&, O&&>>(t.value()));
 		}
 	};
 

@@ -256,7 +256,7 @@ namespace sol {
 			static int call(lua_State* L, Fx&& f, Args&&... args) {
 				typedef typename wrap::traits_type traits_type;
 				typedef typename traits_type::function_pointer_type fp_t;
-				return convertible_call(std::conditional_t<std::is_class<meta::unqualified_t<F>>::value, std::is_convertible<tao::decay_t<Fx>, fp_t>, std::false_type>(), L, std::forward<Fx>(f), std::forward<Args>(args)...);
+				return convertible_call(tao::conditional_t<std::is_class<meta::unqualified_t<F>>::value, std::is_convertible<tao::decay_t<Fx>, fp_t>, std::false_type>(), L, std::forward<Fx>(f), std::forward<Args>(args)...);
 			}
 		};
 
@@ -375,7 +375,7 @@ namespace sol {
 
 			template <typename Fx>
 			static int call(lua_State* L, Fx&& f) {
-				typedef std::conditional_t<std::is_void<T>::value, object_type, T> Ta;
+				typedef tao::conditional_t<std::is_void<T>::value, object_type, T> Ta;
 #if defined(SOL_SAFE_USERTYPE) && SOL_SAFE_USERTYPE
 				auto maybeo = stack::unqualified_check_get<Ta*>(L, 1);
 				if (!maybeo || maybeo.value() == nullptr) {
@@ -405,7 +405,7 @@ namespace sol {
 
 			template <typename V>
 			static int call_assign(std::true_type, lua_State* L, V&& f) {
-				typedef std::conditional_t<std::is_void<T>::value, object_type, T> Ta;
+				typedef tao::conditional_t<std::is_void<T>::value, object_type, T> Ta;
 #if defined(SOL_SAFE_USERTYPE) && SOL_SAFE_USERTYPE
 				auto maybeo = stack::check_get<Ta*>(L, 1);
 				if (!maybeo || maybeo.value() == nullptr) {
@@ -465,7 +465,7 @@ namespace sol {
 
 			template <typename V>
 			static int call(lua_State* L, V&& f) {
-				typedef std::conditional_t<std::is_void<T>::value, object_type, T> Ta;
+				typedef tao::conditional_t<std::is_void<T>::value, object_type, T> Ta;
 #if defined(SOL_SAFE_USERTYPE) && SOL_SAFE_USERTYPE
 				auto maybeo = stack::check_get<Ta*>(L, 1);
 				if (!maybeo || maybeo.value() == nullptr) {
@@ -627,7 +627,7 @@ namespace sol {
 
 		template <typename T, typename R, typename W, bool is_index, bool is_variable, bool checked, int boost, bool clean_stack, typename C>
 		struct lua_call_wrapper<T, property_wrapper<R, W>, is_index, is_variable, checked, boost, clean_stack, C> {
-			typedef std::conditional_t<is_index, R, W> P;
+			typedef tao::conditional_t<is_index, R, W> P;
 			typedef meta::unqualified_t<P> U;
 			typedef wrapper<U> wrap;
 			typedef lua_bind_traits<U> traits_type;

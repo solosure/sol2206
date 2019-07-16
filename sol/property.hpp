@@ -36,8 +36,8 @@ namespace sol {
 	struct property_wrapper {
 		typedef std::integral_constant<bool, !std::is_void<R>::value> can_read;
 		typedef std::integral_constant<bool, !std::is_void<W>::value> can_write;
-		typedef std::conditional_t<can_read::value, R, no_prop> Read;
-		typedef std::conditional_t<can_write::value, W, no_prop> Write;
+		typedef tao::conditional_t<can_read::value, R, no_prop> Read;
+		typedef tao::conditional_t<can_write::value, W, no_prop> Write;
 		Read read;
 		Write write;
 

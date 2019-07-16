@@ -613,7 +613,7 @@ namespace sol {
 					meta::neg<is_lua_primitive<meta::unqualified_t<T>>>,
 					meta::neg<is_unique_usertype<meta::unqualified_t<T>>>>
 					use_reference_tag;
-				pusher<std::conditional_t<use_reference_tag::value, detail::as_reference_tag, meta::unqualified_t<T>>> p{};
+				pusher<tao::conditional_t<use_reference_tag::value, detail::as_reference_tag, meta::unqualified_t<T>>> p{};
 				(void)p;
 				return p.push(L, std::forward<Arg>(arg), std::forward<Args>(args)...);
 			}
@@ -924,9 +924,9 @@ namespace sol {
 		template <typename T>
 		inline decltype(auto) get_usertype(lua_State* L, int index, record& tracking) {
 #if defined(SOL_SAFE_GETTER) && SOL_SAFE_GETTER
-			return stack_detail::tagged_get(types<std::conditional_t<std::is_pointer<T>::value, detail::as_pointer_tag<tao::remove_pointer_t<T>>, detail::as_value_tag<T>>>(), L, index, tracking);
+			return stack_detail::tagged_get(types<tao::conditional_t<std::is_pointer<T>::value, detail::as_pointer_tag<tao::remove_pointer_t<T>>, detail::as_value_tag<T>>>(), L, index, tracking);
 #else
-			return stack_detail::unchecked_get<std::conditional_t<std::is_pointer<T>::value, detail::as_pointer_tag<tao::remove_pointer_t<T>>, detail::as_value_tag<T>>>(L, index, tracking);
+			return stack_detail::unchecked_get<tao::conditional_t<std::is_pointer<T>::value, detail::as_pointer_tag<tao::remove_pointer_t<T>>, detail::as_value_tag<T>>>(L, index, tracking);
 #endif
 		}
 

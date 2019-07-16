@@ -316,7 +316,7 @@ namespace sol {
 				}
 
 				void operator()() {
-					typedef container_usertype_metatable<std::conditional_t<is_shim,
+					typedef container_usertype_metatable<tao::conditional_t<is_shim,
 						as_container_t<tao::remove_pointer_t<T>>,
 						tao::remove_pointer_t<T>>>
 						meta_cumt;

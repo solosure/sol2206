@@ -493,7 +493,7 @@ namespace stack {
 	struct getter<std::basic_string<wchar_t, Traits, Al>> {
 		typedef std::basic_string<wchar_t, Traits, Al> S;
 		static S get(lua_State* L, int index, record& tracking) {
-			typedef std::conditional_t<sizeof(wchar_t) == 2, char16_t, char32_t> Ch;
+			typedef tao::conditional_t<sizeof(wchar_t) == 2, char16_t, char32_t> Ch;
 			typedef typename std::allocator_traits<Al>::template rebind_alloc<Ch> ChAl;
 			typedef std::char_traits<Ch> ChTraits;
 			getter<std::basic_string<Ch, ChTraits, ChAl>> g;
@@ -645,7 +645,7 @@ namespace stack {
 	template <>
 	struct getter<wchar_t> {
 		static wchar_t get(lua_State* L, int index, record& tracking) {
-			typedef std::conditional_t<sizeof(wchar_t) == 2, char16_t, char32_t> Ch;
+			typedef tao::conditional_t<sizeof(wchar_t) == 2, char16_t, char32_t> Ch;
 			getter<Ch> g;
 			(void)g;
 			auto c = g.get(L, index, tracking);
