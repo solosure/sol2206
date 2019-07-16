@@ -54,14 +54,14 @@ namespace sol {
 	namespace usertype_detail {
 #if defined(SOL_USE_BOOST)
 #if defined(SOL_CXX17_FEATURES)
-		template <typename K, typename V, typename H = std::hash<K>, typename E = std::equal_to<>>
+		template <typename K, typename V, typename H = std::hash<K>, typename E = tao::equal_to<>>
 		using map_t = boost::unordered_map<K, V, H, E>;
 #else
-		template <typename K, typename V, typename H = boost::hash<K>, typename E = std::equal_to<>>
+		template <typename K, typename V, typename H = boost::hash<K>, typename E = tao::equal_to<>>
 		using map_t = boost::unordered_map<K, V, H, E>;
 #endif // C++17 or not, WITH boost
 #else
-		template <typename K, typename V, typename H = std::hash<K>, typename E = std::equal_to<>>
+		template <typename K, typename V, typename H = std::hash<K>, typename E = tao::equal_to<>>
 		using map_t = std::unordered_map<K, V, H, E>;
 #endif // Boost map target
 	} // namespace usertype_detail
@@ -146,8 +146,8 @@ namespace sol {
 	};
 
 	template <typename F>
-	inline yielding_t<std::decay_t<F>> yielding(F&& f) {
-		return yielding_t<std::decay_t<F>>(std::forward<F>(f));
+	inline yielding_t<tao::decay_t<F>> yielding(F&& f) {
+		return yielding_t<tao::decay_t<F>>(std::forward<F>(f));
 	}
 
 	typedef std::remove_pointer_t<lua_CFunction> lua_CFunction_ref;
@@ -391,7 +391,7 @@ namespace sol {
 
 	template <typename Sig = function_sig<>, typename... Args>
 	auto as_function(Args&&... args) {
-		return function_arguments<Sig, std::decay_t<Args>...>(std::forward<Args>(args)...);
+		return function_arguments<Sig, tao::decay_t<Args>...>(std::forward<Args>(args)...);
 	}
 
 	template <typename Sig = function_sig<>, typename... Args>

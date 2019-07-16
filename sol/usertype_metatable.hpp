@@ -389,7 +389,7 @@ namespace sol {
 
 	template <typename T>
 	struct clean_type {
-		typedef std::conditional_t<std::is_array<meta::unqualified_t<T>>::value, T&, std::decay_t<T>> type;
+		typedef std::conditional_t<std::is_array<meta::unqualified_t<T>>::value, T&, tao::decay_t<T>> type;
 	};
 
 	template <typename T>

@@ -110,7 +110,7 @@ namespace sol {
 
 	template <typename... Functions>
 	inline auto initializers(Functions&&... functions) {
-		return constructor_wrapper<std::decay_t<Functions>...>(std::forward<Functions>(functions)...);
+		return constructor_wrapper<tao::decay_t<Functions>...>(std::forward<Functions>(functions)...);
 	}
 
 	template <typename... Functions>
@@ -124,7 +124,7 @@ namespace sol {
 
 	template <typename... Functions>
 	inline auto factories(Functions&&... functions) {
-		return factory_wrapper<std::decay_t<Functions>...>(std::forward<Functions>(functions)...);
+		return factory_wrapper<tao::decay_t<Functions>...>(std::forward<Functions>(functions)...);
 	}
 
 	template <typename Function>
@@ -142,7 +142,7 @@ namespace sol {
 
 	template <typename Fx>
 	inline auto destructor(Fx&& fx) {
-		return destructor_wrapper<std::decay_t<Fx>>(std::forward<Fx>(fx));
+		return destructor_wrapper<tao::decay_t<Fx>>(std::forward<Fx>(fx));
 	}
 
 } // namespace sol

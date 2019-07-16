@@ -30,7 +30,7 @@ namespace sol {
 namespace function_detail {
 	template <typename Func, bool is_yielding, bool no_trampoline>
 	struct functor_function {
-		typedef std::decay_t<meta::unwrap_unqualified_t<Func>> function_type;
+		typedef tao::decay_t<meta::unwrap_unqualified_t<Func>> function_type;
 		function_type fx;
 
 		template <typename... Args>
@@ -61,7 +61,7 @@ namespace function_detail {
 
 	template <typename T, typename Function, bool is_yielding>
 	struct member_function {
-		typedef std::remove_pointer_t<std::decay_t<Function>> function_type;
+		typedef std::remove_pointer_t<tao::decay_t<Function>> function_type;
 		typedef meta::function_return_t<function_type> return_type;
 		typedef meta::function_args_t<function_type> args_lists;
 		function_type invocation;
@@ -90,7 +90,7 @@ namespace function_detail {
 
 	template <typename T, typename Function, bool is_yielding>
 	struct member_variable {
-		typedef std::remove_pointer_t<std::decay_t<Function>> function_type;
+		typedef std::remove_pointer_t<tao::decay_t<Function>> function_type;
 		typedef typename meta::bind_traits<function_type>::return_type return_type;
 		typedef typename meta::bind_traits<function_type>::args_list args_lists;
 		function_type var;

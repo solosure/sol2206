@@ -50,19 +50,19 @@ namespace sol {
 	namespace property_detail {
 		template <typename R, typename W>
 		inline decltype(auto) property(std::true_type, R&& read, W&& write) {
-			return property_wrapper<std::decay_t<R>, std::decay_t<W>>(std::forward<R>(read), std::forward<W>(write));
+			return property_wrapper<tao::decay_t<R>, tao::decay_t<W>>(std::forward<R>(read), std::forward<W>(write));
 		}
 		template <typename W, typename R>
 		inline decltype(auto) property(std::false_type, W&& write, R&& read) {
-			return property_wrapper<std::decay_t<R>, std::decay_t<W>>(std::forward<R>(read), std::forward<W>(write));
+			return property_wrapper<tao::decay_t<R>, tao::decay_t<W>>(std::forward<R>(read), std::forward<W>(write));
 		}
 		template <typename R>
 		inline decltype(auto) property(std::true_type, R&& read) {
-			return property_wrapper<std::decay_t<R>, void>(std::forward<R>(read), no_prop());
+			return property_wrapper<tao::decay_t<R>, void>(std::forward<R>(read), no_prop());
 		}
 		template <typename W>
 		inline decltype(auto) property(std::false_type, W&& write) {
-			return property_wrapper<void, std::decay_t<W>>(no_prop(), std::forward<W>(write));
+			return property_wrapper<void, tao::decay_t<W>>(no_prop(), std::forward<W>(write));
 		}
 	} // namespace property_detail
 

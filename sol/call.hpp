@@ -256,7 +256,7 @@ namespace sol {
 			static int call(lua_State* L, Fx&& f, Args&&... args) {
 				typedef typename wrap::traits_type traits_type;
 				typedef typename traits_type::function_pointer_type fp_t;
-				return convertible_call(std::conditional_t<std::is_class<meta::unqualified_t<F>>::value, std::is_convertible<std::decay_t<Fx>, fp_t>, std::false_type>(), L, std::forward<Fx>(f), std::forward<Args>(args)...);
+				return convertible_call(std::conditional_t<std::is_class<meta::unqualified_t<F>>::value, std::is_convertible<tao::decay_t<Fx>, fp_t>, std::false_type>(), L, std::forward<Fx>(f), std::forward<Args>(args)...);
 			}
 		};
 

@@ -45,7 +45,7 @@ namespace sol {
 		struct pusher<function_sig<Sigs...>> {
 			template <bool is_yielding, typename... Sig, typename Fx, typename... Args>
 			static void select_convertible(std::false_type, types<Sig...>, lua_State* L, Fx&& fx, Args&&... args) {
-				typedef std::remove_pointer_t<std::decay_t<Fx>> clean_fx;
+				typedef std::remove_pointer_t<tao::decay_t<Fx>> clean_fx;
 				typedef function_detail::functor_function<clean_fx, is_yielding, true> F;
 				set_fx<false, F>(L, std::forward<Fx>(fx), std::forward<Args>(args)...);
 			}
@@ -59,7 +59,7 @@ namespace sol {
 
 			template <bool is_yielding, typename R, typename... A, typename Fx, typename... Args>
 			static void select_convertible(types<R(A...)> t, lua_State* L, Fx&& fx, Args&&... args) {
-				typedef std::decay_t<meta::unwrap_unqualified_t<Fx>> raw_fx_t;
+				typedef tao::decay_t<meta::unwrap_unqualified_t<Fx>> raw_fx_t;
 				typedef R (*fx_ptr_t)(A...);
 				typedef std::is_convertible<raw_fx_t, fx_ptr_t> is_convertible;
 				select_convertible<is_yielding>(is_convertible(), t, L, std::forward<Fx>(fx), std::forward<Args>(args)...);
@@ -73,17 +73,17 @@ namespace sol {
 
 			template <bool is_yielding, typename Fx, typename T, typename... Args>
 			static void select_reference_member_variable(std::false_type, lua_State* L, Fx&& fx, T&& obj, Args&&... args) {
-				typedef std::remove_pointer_t<std::decay_t<Fx>> clean_fx;
+				typedef std::remove_pointer_t<tao::decay_t<Fx>> clean_fx;
 				typedef function_detail::member_variable<meta::unwrap_unqualified_t<T>, clean_fx, is_yielding> F;
 				set_fx<false, F>(L, std::forward<Fx>(fx), std::forward<T>(obj), std::forward<Args>(args)...);
 			}
 
 			template <bool is_yielding, typename Fx, typename T, typename... Args>
 			static void select_reference_member_variable(std::true_type, lua_State* L, Fx&& fx, T&& obj, Args&&... args) {
-				typedef std::decay_t<Fx> dFx;
+				typedef tao::decay_t<Fx> dFx;
 				dFx memfxptr(std::forward<Fx>(fx));
 				auto userptr = detail::ptr(std::forward<T>(obj), std::forward<Args>(args)...);
-				lua_CFunction freefunc = &function_detail::upvalue_member_variable<std::decay_t<decltype(*userptr)>, meta::unqualified_t<Fx>, is_yielding>::call;
+				lua_CFunction freefunc = &function_detail::upvalue_member_variable<tao::decay_t<decltype(*userptr)>, meta::unqualified_t<Fx>, is_yielding>::call;
 
 				int upvalues = 0;
 				upvalues += stack::push(L, nullptr);
@@ -126,17 +126,17 @@ namespace sol {
 
 			template <bool is_yielding, typename Fx, typename T, typename... Args>
 			static void select_reference_member_function(std::false_type, lua_State* L, Fx&& fx, T&& obj, Args&&... args) {
-				typedef std::decay_t<Fx> clean_fx;
+				typedef tao::decay_t<Fx> clean_fx;
 				typedef function_detail::member_function<meta::unwrap_unqualified_t<T>, clean_fx, is_yielding> F;
 				set_fx<false, F>(L, std::forward<Fx>(fx), std::forward<T>(obj), std::forward<Args>(args)...);
 			}
 
 			template <bool is_yielding, typename Fx, typename T, typename... Args>
 			static void select_reference_member_function(std::true_type, lua_State* L, Fx&& fx, T&& obj, Args&&... args) {
-				typedef std::decay_t<Fx> dFx;
+				typedef tao::decay_t<Fx> dFx;
 				dFx memfxptr(std::forward<Fx>(fx));
 				auto userptr = detail::ptr(std::forward<T>(obj), std::forward<Args>(args)...);
-				lua_CFunction freefunc = &function_detail::upvalue_member_function<std::decay_t<decltype(*userptr)>, meta::unqualified_t<Fx>, is_yielding>::call;
+				lua_CFunction freefunc = &function_detail::upvalue_member_function<tao::decay_t<decltype(*userptr)>, meta::unqualified_t<Fx>, is_yielding>::call;
 
 				int upvalues = 0;
 				upvalues += stack::push(L, nullptr);
@@ -184,7 +184,7 @@ namespace sol {
 
 			template <bool is_yielding, typename Fx, typename... Args>
 			static void select_function(std::true_type, lua_State* L, Fx&& fx, Args&&... args) {
-				std::decay_t<Fx> target(std::forward<Fx>(fx), std::forward<Args>(args)...);
+				tao::decay_t<Fx> target(std::forward<Fx>(fx), std::forward<Args>(args)...);
 				lua_CFunction freefunc = &function_detail::upvalue_free_function<Fx, is_yielding>::call;
 
 				int upvalues = 0;

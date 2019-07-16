@@ -36,7 +36,6 @@
 #include <iterator>
 #include <iosfwd>
 
-
 namespace sol {
 	template <std::size_t I>
 	using index_value = std::integral_constant<std::size_t, I>;
@@ -103,7 +102,7 @@ namespace sol {
 		}
 
 		template <typename T, template <typename...> class Templ>
-		using is_specialization_of = meta_detail::is_specialization_of<std::remove_cv_t<T>, Templ>;
+		using is_specialization_of = meta_detail::is_specialization_of<tao::remove_cv_t<T>, Templ>;
 
 		template <class T, class...>
 		struct all_same : std::true_type {};
@@ -130,7 +129,7 @@ namespace sol {
 		using neg = boolean<!T::value>;
 
 		template <typename Condition, typename Then, typename Else>
-		using condition = std::conditional_t<Condition::value, Then, Else>;
+		using condition = tao::conditional_t<Condition::value, Then, Else>;
 
 		template <typename... Args>
 		struct all : boolean<true> {};
@@ -151,19 +150,19 @@ namespace sol {
 		constexpr const auto enabler = enable_t::_;
 
 		template <bool value, typename T = void>
-		using disable_if_t = std::enable_if_t<!value, T>;
+		using disable_if_t = tao::enable_if_t<!value, T>;
 
 		template <typename... Args>
-		using enable = std::enable_if_t<all<Args...>::value, enable_t>;
+		using enable = tao::enable_if_t<all<Args...>::value, enable_t>;
 
 		template <typename... Args>
-		using disable = std::enable_if_t<neg<all<Args...>>::value, enable_t>;
+		using disable = tao::enable_if_t<neg<all<Args...>>::value, enable_t>;
 
 		template <typename... Args>
-		using enable_any = std::enable_if_t<any<Args...>::value, enable_t>;
+		using enable_any = tao::enable_if_t<any<Args...>::value, enable_t>;
 
 		template <typename... Args>
-		using disable_any = std::enable_if_t<neg<any<Args...>>::value, enable_t>;
+		using disable_any = tao::enable_if_t<neg<any<Args...>>::value, enable_t>;
 
 		template <typename V, typename... Vs>
 		struct find_in_pack_v : boolean<false> {};
@@ -176,7 +175,7 @@ namespace sol {
 			struct index_in_pack : std::integral_constant<std::size_t, SIZE_MAX> {};
 
 			template <std::size_t I, typename T, typename T1, typename... Args>
-			struct index_in_pack<I, T, T1, Args...> : std::conditional_t<std::is_same<T, T1>::value, std::integral_constant<std::ptrdiff_t, I>, index_in_pack<I + 1, T, Args...>> {};
+			struct index_in_pack<I, T, T1, Args...> : tao::conditional_t<std::is_same<T, T1>::value, std::integral_constant<std::ptrdiff_t, I>, index_in_pack<I + 1, T, Args...>> {};
 		} // namespace meta_detail
 
 		template <typename T, typename... Args>
@@ -204,7 +203,7 @@ namespace sol {
 			template <std::size_t Limit, std::size_t I, template <typename...> class Pred, typename... Ts>
 			struct count_for_pack : std::integral_constant<std::size_t, 0> {};
 			template <std::size_t Limit, std::size_t I, template <typename...> class Pred, typename T, typename... Ts>
-						struct count_for_pack<Limit, I, Pred, T, Ts...> : std::conditional_t < sizeof...(Ts)
+						struct count_for_pack<Limit, I, Pred, T, Ts...> : tao::conditional_t < sizeof...(Ts)
 					== 0
 				|| Limit<2,
 					   std::integral_constant<std::size_t, I + static_cast<std::size_t>(Limit != 0 && Pred<T>::value)>,
@@ -212,7 +211,7 @@ namespace sol {
 			template <std::size_t I, template <typename...> class Pred, typename... Ts>
 			struct count_2_for_pack : std::integral_constant<std::size_t, 0> {};
 			template <std::size_t I, template <typename...> class Pred, typename T, typename U, typename... Ts>
-			struct count_2_for_pack<I, Pred, T, U, Ts...> : std::conditional_t<sizeof...(Ts) == 0,
+			struct count_2_for_pack<I, Pred, T, U, Ts...> : tao::conditional_t<sizeof...(Ts) == 0,
 													   std::integral_constant<std::size_t, I + static_cast<std::size_t>(Pred<T>::value)>,
 													   count_2_for_pack<I + static_cast<std::size_t>(Pred<T>::value), Pred, Ts...>> {};
 		} // namespace meta_detail
@@ -269,17 +268,17 @@ namespace sol {
 		namespace meta_detail {
 
 			template <typename T, typename = void>
-			struct is_callable : std::is_function<std::remove_pointer_t<T>> {};
+			struct is_callable : std::is_function<tao::remove_pointer_t<T>> {};
 
 			template <typename T>
-			struct is_callable<T, std::enable_if_t<std::is_final<unqualified_t<T>>::value 
+			struct is_callable<T, tao::enable_if_t<tao::is_final<unqualified_t<T>>::value 
 				&& std::is_class<unqualified_t<T>>::value
 				&&  std::is_same<decltype(void(&T::operator())), void>::value>> {
 
 			};
 
 			template <typename T>
-			struct is_callable<T, std::enable_if_t<!std::is_final<unqualified_t<T>>::value && std::is_class<unqualified_t<T>>::value && std::is_destructible<unqualified_t<T>>::value>> {
+			struct is_callable<T, tao::enable_if_t<!tao::is_final<unqualified_t<T>>::value && std::is_class<unqualified_t<T>>::value && std::is_destructible<unqualified_t<T>>::value>> {
 				using yes = char;
 				using no = struct { char s[2]; };
 
@@ -300,7 +299,7 @@ namespace sol {
 			};
 
 			template <typename T>
-			struct is_callable<T, std::enable_if_t<!std::is_final<unqualified_t<T>>::value && std::is_class<unqualified_t<T>>::value && !std::is_destructible<unqualified_t<T>>::value>> {
+			struct is_callable<T, tao::enable_if_t<!tao::is_final<unqualified_t<T>>::value && std::is_class<unqualified_t<T>>::value && !std::is_destructible<unqualified_t<T>>::value>> {
 				using yes = char;
 				using no = struct { char s[2]; };
 
@@ -383,7 +382,7 @@ namespace sol {
 			struct has_push_back_test {
 			private:
 				template <typename C>
-				static sfinae_yes_t test(decltype(std::declval<C>().push_back(std::declval<std::add_rvalue_reference_t<typename C::value_type>>())) *);
+				static sfinae_yes_t test(decltype(std::declval<C>().push_back(std::declval<tao::add_rvalue_reference_t<typename C::value_type>>())) *);
 				template <typename C>
 				static sfinae_no_t test(...);
 
@@ -395,7 +394,7 @@ namespace sol {
 			struct has_insert_test {
 			private:
 				template <typename C>
-				static sfinae_yes_t test(decltype(std::declval<C>().insert(std::declval<std::add_rvalue_reference_t<typename C::const_iterator>>(), std::declval<std::add_rvalue_reference_t<typename C::value_type>>()))*);
+				static sfinae_yes_t test(decltype(std::declval<C>().insert(std::declval<tao::add_rvalue_reference_t<typename C::const_iterator>>(), std::declval<tao::add_rvalue_reference_t<typename C::value_type>>()))*);
 				template <typename C>
 				static sfinae_no_t test(...);
 
@@ -407,7 +406,7 @@ namespace sol {
 			struct has_insert_after_test {
 			private:
 				template <typename C>
-				static sfinae_yes_t test(decltype(std::declval<C>().insert_after(std::declval<std::add_rvalue_reference_t<typename C::const_iterator>>(), std::declval<std::add_rvalue_reference_t<typename C::value_type>>()))*);
+				static sfinae_yes_t test(decltype(std::declval<C>().insert_after(std::declval<tao::add_rvalue_reference_t<typename C::const_iterator>>(), std::declval<tao::add_rvalue_reference_t<typename C::value_type>>()))*);
 				template <typename C>
 				static sfinae_no_t test(...);
 
@@ -578,12 +577,12 @@ namespace sol {
 #else
 			is_specialization_of<meta::unqualified_t<T>, basic_string_view>,
 #endif
-			meta::all<std::is_array<unqualified_t<T>>, meta::any_same<meta::unqualified_t<std::remove_all_extents_t<meta::unqualified_t<T>>>, char, char16_t, char32_t, wchar_t>>
+			meta::all<std::is_array<unqualified_t<T>>, meta::any_same<meta::unqualified_t<tao::remove_all_extents_t<meta::unqualified_t<T>>>, char, char16_t, char32_t, wchar_t>>
 		>;
 
 		template <typename T>
 		using is_string_constructible = any<
-			meta::all<std::is_array<unqualified_t<T>>, std::is_same<meta::unqualified_t<std::remove_all_extents_t<meta::unqualified_t<T>>>, char>>,
+			meta::all<std::is_array<unqualified_t<T>>, std::is_same<meta::unqualified_t<tao::remove_all_extents_t<meta::unqualified_t<T>>>, char>>,
 			std::is_same<unqualified_t<T>, const char*>, 
 			std::is_same<unqualified_t<T>, char>, std::is_same<unqualified_t<T>, std::string>, std::is_same<unqualified_t<T>, std::initializer_list<char>>
 #if defined(SOL_CXX17_FEATURES) && SOL_CXX17_FEATURES
@@ -599,8 +598,8 @@ namespace sol {
 
 		template <typename T>
 		using is_c_str = any<
-			std::is_same<std::decay_t<unqualified_t<T>>, const char*>,
-			std::is_same<std::decay_t<unqualified_t<T>>, char*>,
+			std::is_same<tao::decay_t<unqualified_t<T>>, const char*>,
+			std::is_same<tao::decay_t<unqualified_t<T>>, char*>,
 			std::is_same<unqualified_t<T>, std::string>>;
 
 		template <typename T>
@@ -614,18 +613,18 @@ namespace sol {
 
 		namespace meta_detail {
 			template <typename T, meta::disable<meta::is_specialization_of<meta::unqualified_t<T>, std::tuple>> = meta::enabler>
-			decltype(auto) force_tuple(T&& x) {
-				return std::tuple<std::decay_t<T>>(std::forward<T>(x));
+			auto force_tuple(T&& x) -> decltype(std::tuple<tao::decay_t<T>>(std::forward<T>(x))) {
+				return std::tuple<tao::decay_t<T>>(std::forward<T>(x));
 			}
 
 			template <typename T, meta::enable<meta::is_specialization_of<meta::unqualified_t<T>, std::tuple>> = meta::enabler>
-			decltype(auto) force_tuple(T&& x) {
+			auto force_tuple(T&& x) ->decltype(std::forward<T>(x)) {
 				return std::forward<T>(x);
 			}
 		} // namespace meta_detail
 
 		template <typename... X>
-		decltype(auto) tuplefy(X&&... x) {
+		auto tuplefy(X&&... x) -> decltype(std::tuple_cat(meta_detail::force_tuple(std::forward<X>(x))...)) {
 			return std::tuple_cat(meta_detail::force_tuple(std::forward<X>(x))...);
 		}
 
@@ -635,7 +634,7 @@ namespace sol {
 		};
 
 		template <typename T>
-		struct iterator_tag<T, std::conditional_t<false, typename T::iterator_category, void>> {
+		struct iterator_tag<T, tao::conditional_t<false, typename T::iterator_category, void>> {
 			using type = typename T::iterator_category;
 		};
 
@@ -650,18 +649,18 @@ namespace sol {
 		struct is_pointer_like<std::shared_ptr<T>> : std::true_type {};
 
 		template <std::size_t I, typename Tuple>
-		decltype(auto) forward_get(Tuple&& tuple) {
+		auto forward_get(Tuple&& tuple) -> decltype(std::forward<meta::tuple_element_t<I, Tuple>>(std::get<I>(tuple))) {
 			return std::forward<meta::tuple_element_t<I, Tuple>>(std::get<I>(tuple));
 		}
 
 		template <std::size_t... I, typename Tuple>
-		auto forward_tuple_impl(std::index_sequence<I...>, Tuple&& tuple) -> decltype(std::tuple<decltype(forward_get<I>(tuple))...>(forward_get<I>(tuple)...)) {
+		auto forward_tuple_impl(tao::seq::index_sequence<I...>, Tuple&& tuple) -> decltype(std::tuple<decltype(forward_get<I>(tuple))...>(forward_get<I>(tuple)...)) {
 			return std::tuple<decltype(forward_get<I>(tuple))...>(std::move(std::get<I>(tuple))...);
 		}
 
 		template <typename Tuple>
 		auto forward_tuple(Tuple&& tuple) {
-			auto x = forward_tuple_impl(std::make_index_sequence<std::tuple_size<meta::unqualified_t<Tuple>>::value>(), std::forward<Tuple>(tuple));
+			auto x = forward_tuple_impl(tao::seq::make_index_sequence<std::tuple_size<meta::unqualified_t<Tuple>>::value>(), std::forward<Tuple>(tuple));
 			return x;
 		}
 

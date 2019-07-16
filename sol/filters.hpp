@@ -66,7 +66,7 @@ namespace sol {
 
 	template <typename F, typename... Filters>
 	struct filter_wrapper {
-		typedef std::index_sequence_for<Filters...> indices;
+		typedef tao::seq::index_sequence_for<Filters...> indices;
 
 		F value;
 		std::tuple<Filters...> filters;
@@ -84,7 +84,7 @@ namespace sol {
 
 	template <typename F, typename... Args>
 	auto filters(F&& f, Args&&... args) {
-		return filter_wrapper<std::decay_t<F>, std::decay_t<Args>...>(std::forward<F>(f), std::forward<Args>(args)...);
+		return filter_wrapper<tao::decay_t<F>, tao::decay_t<Args>...>(std::forward<F>(f), std::forward<Args>(args)...);
 	}
 } // namespace sol
 

@@ -74,7 +74,7 @@ namespace sol {
 		namespace stack_detail {
 			template <typename T>
 			inline int push_as_upvalues(lua_State* L, T& item) {
-				typedef std::decay_t<T> TValue;
+				typedef tao::decay_t<T> TValue;
 				static const std::size_t itemsize = sizeof(TValue);
 				static const std::size_t voidsize = sizeof(void*);
 				static const std::size_t voidsizem1 = voidsize - 1;

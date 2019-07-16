@@ -26,6 +26,7 @@
 
 #include "feature_test.hpp"
 #include "tuple.hpp"
+#include <tao/compat.hpp>
 
 namespace sol {
 namespace meta {
@@ -60,7 +61,7 @@ namespace meta {
 		template <bool it_is_noexcept, bool has_c_variadic, typename T, typename R, typename... Args>
 		struct basic_traits {
 		private:
-			typedef std::conditional_t<std::is_void<T>::value, int, T>& first_type;
+			typedef tao::conditional_t<std::is_void<T>::value, int, T>& first_type;
 
 		public:
 			static const bool is_noexcept = it_is_noexcept;
@@ -74,10 +75,10 @@ namespace meta {
 			typedef R return_type;
 			typedef tuple_types<R> returns_list;
 			typedef R(function_type)(Args...);
-			typedef std::conditional_t<std::is_void<T>::value, args_list, types<first_type, Args...>> free_args_list;
-			typedef std::conditional_t<std::is_void<T>::value, R(Args...), R(first_type, Args...)> free_function_type;
-			typedef std::conditional_t<std::is_void<T>::value, R (*)(Args...), R (*)(first_type, Args...)> free_function_pointer_type;
-			typedef std::remove_pointer_t<free_function_pointer_type> signature_type;
+			typedef tao::conditional_t<std::is_void<T>::value, args_list, types<first_type, Args...>> free_args_list;
+			typedef tao::conditional_t<std::is_void<T>::value, R(Args...), R(first_type, Args...)> free_function_type;
+			typedef tao::conditional_t<std::is_void<T>::value, R (*)(Args...), R (*)(first_type, Args...)> free_function_pointer_type;
+			typedef tao::remove_pointer_t<free_function_pointer_type> signature_type;
 			template <std::size_t i>
 			using arg_at = void_tuple_element_t<i, args_tuple>;
 		};
@@ -502,12 +503,12 @@ namespace meta {
 		struct fx_traits<Signature, true> : fx_traits<typename fx_traits<decltype(&Signature::operator())>::function_type, false> {};
 
 		template <typename Signature, bool b = std::is_member_object_pointer<Signature>::value>
-		struct callable_traits : fx_traits<std::decay_t<Signature>> {
+		struct callable_traits : fx_traits<tao::decay_t<Signature>> {
 		};
 
 		template <typename R, typename T>
 		struct callable_traits<R(T::*), true> {
-			typedef std::conditional_t<std::is_array<R>::value, std::add_lvalue_reference_t<T>, R> return_type;
+			typedef tao::conditional_t<std::is_array<R>::value, tao::add_lvalue_reference_t<T>, R> return_type;
 			typedef return_type Arg;
 			typedef T object_type;
 			using signature_type = R(T::*);

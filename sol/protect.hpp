@@ -46,7 +46,7 @@ namespace sol {
 
 	template <typename T>
 	auto protect(T&& value) {
-		return protect_t<std::decay_t<T>>(std::forward<T>(value));
+		return protect_t<tao::decay_t<T>>(std::forward<T>(value));
 	}
 
 } // namespace sol

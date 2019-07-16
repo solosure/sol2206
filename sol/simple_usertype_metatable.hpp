@@ -275,7 +275,7 @@ namespace sol {
 			mustindex = true;
 			secondarymeta = true;
 			std::string key = usertype_detail::make_string(std::forward<N>(n));
-			auto o = std::make_unique<usertype_detail::callable_binding<T, std::decay_t<F>>>(std::forward<F>(f));
+			auto o = std::make_unique<usertype_detail::callable_binding<T, tao::decay_t<F>>>(std::forward<F>(f));
 			auto hint = varmap.find(key);
 			if (hint == varmap.cend()) {
 				varmap.emplace_hint(hint, std::move(key), std::move(o));

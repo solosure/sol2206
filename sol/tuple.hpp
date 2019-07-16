@@ -26,6 +26,7 @@
 
 #include <tuple>
 #include <cstddef>
+#include <tao/compat.hpp>
 
 namespace sol {
 	namespace detail {
@@ -34,7 +35,7 @@ namespace sol {
 
 	template <typename... Args>
 	struct types {
-		typedef std::make_index_sequence<sizeof...(Args)> indices;
+		typedef tao::seq::make_index_sequence<sizeof...(Args)> indices;
 		static constexpr std::size_t size() {
 			return sizeof...(Args);
 		}
@@ -49,7 +50,7 @@ namespace sol {
 		} // namespace detail
 
 		template <typename T>
-		using unqualified = std::remove_cv<std::remove_reference_t<T>>;
+		using unqualified = std::remove_cv<tao::remove_reference_t<T>>;
 
 		template <typename T>
 		using unqualified_t = typename unqualified<T>::type;
@@ -76,10 +77,10 @@ namespace sol {
 		};
 
 		template <std::size_t N, typename Tuple>
-		using tuple_element = std::tuple_element<N, std::remove_reference_t<Tuple>>;
+		using tuple_element = std::tuple_element<N, tao::remove_reference_t<Tuple>>;
 
 		template <std::size_t N, typename Tuple>
-		using tuple_element_t = std::tuple_element_t<N, std::remove_reference_t<Tuple>>;
+		using tuple_element_t = tao::tuple_element_t<N, tao::remove_reference_t<Tuple>>;
 
 		template <std::size_t N, typename Tuple>
 		using unqualified_tuple_element = unqualified<tuple_element_t<N, Tuple>>;
