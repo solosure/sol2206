@@ -874,7 +874,7 @@ namespace stack {
 		}
 
 		static R get(lua_State* L, int index, record& tracking) {
-			return apply(std::make_index_sequence<sizeof...(Tn)>(), L, index, tracking);
+			return apply(tao::seq::make_index_sequence<sizeof...(Tn)>(), L, index, tracking);
 		}
 	};
 

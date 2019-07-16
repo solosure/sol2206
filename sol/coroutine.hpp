@@ -236,7 +236,7 @@ namespace sol {
 			// make sure coroutines don't screw us over
 			base_t::push();
 			int pushcount = stack::multi_push_reference(lua_state(), std::forward<Args>(args)...);
-			return invoke(types<Ret...>(), std::make_index_sequence<sizeof...(Ret)>(), pushcount);
+			return invoke(types<Ret...>(), tao::seq::make_index_sequence<sizeof...(Ret)>(), pushcount);
 		}
 	};
 } // namespace sol

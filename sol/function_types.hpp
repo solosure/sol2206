@@ -268,11 +268,11 @@ namespace sol {
 			}
 
 			static int push(lua_State* L, const function_arguments<T, Args...>& fp) {
-				return push_func(std::make_index_sequence<sizeof...(Args)>(), L, fp);
+				return push_func(tao::seq::make_index_sequence<sizeof...(Args)>(), L, fp);
 			}
 
 			static int push(lua_State* L, function_arguments<T, Args...>&& fp) {
-				return push_func(std::make_index_sequence<sizeof...(Args)>(), L, std::move(fp));
+				return push_func(tao::seq::make_index_sequence<sizeof...(Args)>(), L, std::move(fp));
 			}
 		};
 

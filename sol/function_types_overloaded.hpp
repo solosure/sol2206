@@ -33,7 +33,7 @@ namespace function_detail {
 	template <int start_skew = 0, typename... Functions>
 	struct overloaded_function {
 		typedef std::tuple<Functions...> overload_list;
-		typedef std::make_index_sequence<sizeof...(Functions)> indices;
+		typedef tao::seq::make_index_sequence<sizeof...(Functions)> indices;
 		overload_list overloads;
 
 		overloaded_function(overload_list set)

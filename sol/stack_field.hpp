@@ -128,12 +128,12 @@ namespace stack {
 
 		template <typename Keys>
 		void get(lua_State* L, Keys&& keys) {
-			apply(std::make_index_sequence<sizeof...(Args)>(), L, std::forward<Keys>(keys), lua_absindex(L, -1));
+			apply(tao::seq::make_index_sequence<sizeof...(Args)>(), L, std::forward<Keys>(keys), lua_absindex(L, -1));
 		}
 
 		template <typename Keys>
 		void get(lua_State* L, Keys&& keys, int tableindex) {
-			apply(std::make_index_sequence<sizeof...(Args)>(), L, std::forward<Keys>(keys), tableindex);
+			apply(tao::seq::make_index_sequence<sizeof...(Args)>(), L, std::forward<Keys>(keys), tableindex);
 		}
 	};
 
@@ -257,7 +257,7 @@ namespace stack {
 
 		template <typename Keys, typename Value>
 		void set(lua_State* L, Keys&& keys, Value&& value, int tableindex = -3) {
-			top_apply<b>(std::make_index_sequence<sizeof...(Args)>(), L, std::forward<Keys>(keys), std::forward<Value>(value), tableindex);
+			top_apply<b>(tao::seq::make_index_sequence<sizeof...(Args)>(), L, std::forward<Keys>(keys), std::forward<Value>(value), tableindex);
 		}
 	};
 

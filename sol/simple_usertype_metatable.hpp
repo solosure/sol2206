@@ -354,7 +354,7 @@ namespace sol {
 
 		template <typename... Args>
 		simple_usertype_metatable(lua_State* L, detail::verified_tag v, Args&&... args)
-		: simple_usertype_metatable(v, std::make_index_sequence<sizeof...(Args) / 2>(), L, std::forward_as_tuple(std::forward<Args>(args)...)) {
+		: simple_usertype_metatable(v, tao::seq::make_index_sequence<sizeof...(Args) / 2>(), L, std::forward_as_tuple(std::forward<Args>(args)...)) {
 		}
 
 		template <typename... Args>

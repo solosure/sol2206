@@ -54,7 +54,7 @@ namespace sol {
 			typedef tie_size<meta::unqualified_t<T>> value_size;
 			typedef tie_size<std::tuple<Tn...>> tie_size;
 			typedef tao::conditional_t<(value_size::value < tie_size::value), value_size, tie_size> indices_size;
-			typedef std::make_index_sequence<indices_size::value> indices;
+			typedef tao::seq::make_index_sequence<indices_size::value> indices;
 			set_extra(detail::is_speshul<meta::unqualified_t<T>>(), indices(), std::forward<T>(target));
 		}
 

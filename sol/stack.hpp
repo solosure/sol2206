@@ -144,7 +144,7 @@ namespace sol {
 
 		template <bool check_args = detail::default_safe_function_calls, typename R, typename... Args, typename Fx, typename... FxArgs, typename = tao::enable_if_t<!std::is_void<R>::value>>
 		inline decltype(auto) call(types<R> tr, types<Args...> ta, lua_State* L, int start, Fx&& fx, FxArgs&&... args) {
-			typedef std::make_index_sequence<sizeof...(Args)> args_indices;
+			typedef tao::seq::make_index_sequence<sizeof...(Args)> args_indices;
 			return stack_detail::call<check_args>(tr, ta, args_indices(), L, start, std::forward<Fx>(fx), std::forward<FxArgs>(args)...);
 		}
 
@@ -155,7 +155,7 @@ namespace sol {
 
 		template <bool check_args = detail::default_safe_function_calls, typename... Args, typename Fx, typename... FxArgs>
 		inline void call(types<void> tr, types<Args...> ta, lua_State* L, int start, Fx&& fx, FxArgs&&... args) {
-			typedef std::make_index_sequence<sizeof...(Args)> args_indices;
+			typedef tao::seq::make_index_sequence<sizeof...(Args)> args_indices;
 			stack_detail::call<check_args>(tr, ta, args_indices(), L, start, std::forward<Fx>(fx), std::forward<FxArgs>(args)...);
 		}
 

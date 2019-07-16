@@ -458,7 +458,7 @@ namespace stack {
 
 		template <typename T>
 		static int push(lua_State* L, T&& c) {
-			return push(std::make_index_sequence<1 + sizeof...(Args)>(), L, std::forward<T>(c));
+			return push(tao::seq::make_index_sequence<1 + sizeof...(Args)>(), L, std::forward<T>(c));
 		}
 	};
 

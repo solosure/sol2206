@@ -400,7 +400,7 @@ namespace sol {
 
 	template <typename T, std::size_t... I, typename... Tn>
 	struct usertype_metatable<T, tao::seq::index_sequence<I...>, Tn...> : usertype_metatable_core, usertype_detail::registrar {
-		typedef std::make_index_sequence<sizeof...(I) * 2> indices;
+		typedef tao::seq::make_index_sequence<sizeof...(I) * 2> indices;
 		typedef tao::seq::index_sequence<I...> half_indices;
 		typedef std::array<luaL_Reg, sizeof...(Tn) / 2 + 1 + 31> regs_t;
 		typedef std::tuple<Tn...> RawTuple;

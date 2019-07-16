@@ -39,7 +39,7 @@ namespace sol {
 
 		template <typename... Args>
 		usertype(detail::verified_tag, Args&&... args)
-		: metatableregister(std::make_unique<usertype_metatable<T, std::make_index_sequence<sizeof...(Args) / 2>, Args...>>(std::forward<Args>(args)...)) {
+		: metatableregister(std::make_unique<usertype_metatable<T, tao::seq::make_index_sequence<sizeof...(Args) / 2>, Args...>>(std::forward<Args>(args)...)) {
 			static_assert(detail::has_destructor<Args...>::value, "this type does not have an explicit destructor declared; please pass a custom destructor function wrapped in sol::destruct, especially if the type does not have an accessible (private) destructor");
 		}
 

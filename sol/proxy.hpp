@@ -69,7 +69,7 @@ namespace sol {
 
 		template <typename T>
 		proxy& set(T&& item) {
-			tuple_set(std::make_index_sequence<std::tuple_size<meta::unqualified_t<key_type>>::value>(), std::forward<T>(item));
+			tuple_set(tao::seq::make_index_sequence<std::tuple_size<meta::unqualified_t<key_type>>::value>(), std::forward<T>(item));
 			return *this;
 		}
 
@@ -96,7 +96,7 @@ namespace sol {
 
 		template <typename T>
 		decltype(auto) get() const {
-			return tuple_get<T>(std::make_index_sequence<std::tuple_size<meta::unqualified_t<key_type>>::value>());
+			return tuple_get<T>(tao::seq::make_index_sequence<std::tuple_size<meta::unqualified_t<key_type>>::value>());
 		}
 
 		template <typename T>

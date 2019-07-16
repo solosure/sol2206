@@ -271,13 +271,13 @@ namespace sol {
 					detail::protected_handler<true, handler_t> h(error_handler);
 					base_t::push();
 					int pushcount = stack::multi_push_reference(lua_state(), std::forward<Args>(args)...);
-					return invoke(types<Ret...>(), std::make_index_sequence<sizeof...(Ret)>(), pushcount, h);
+					return invoke(types<Ret...>(), tao::seq::make_index_sequence<sizeof...(Ret)>(), pushcount, h);
 				}
 				else {
 					detail::protected_handler<false, handler_t> h(error_handler);
 					base_t::push();
 					int pushcount = stack::multi_push_reference(lua_state(), std::forward<Args>(args)...);
-					return invoke(types<Ret...>(), std::make_index_sequence<sizeof...(Ret)>(), pushcount, h);
+					return invoke(types<Ret...>(), tao::seq::make_index_sequence<sizeof...(Ret)>(), pushcount, h);
 				}
 			}
 			else {
@@ -296,12 +296,12 @@ namespace sol {
 						h.stackindex = lua_absindex(lua_state(), -2);
 					}
 					int pushcount = stack::multi_push_reference(lua_state(), std::forward<Args>(args)...);
-					return invoke(types<Ret...>(), std::make_index_sequence<sizeof...(Ret)>(), pushcount, h);
+					return invoke(types<Ret...>(), tao::seq::make_index_sequence<sizeof...(Ret)>(), pushcount, h);
 				}
 				else {
 					detail::protected_handler<false, handler_t> h(error_handler);
 					int pushcount = stack::multi_push_reference(lua_state(), std::forward<Args>(args)...);
-					return invoke(types<Ret...>(), std::make_index_sequence<sizeof...(Ret)>(), pushcount, h);
+					return invoke(types<Ret...>(), tao::seq::make_index_sequence<sizeof...(Ret)>(), pushcount, h);
 				}
 			}
 		}
