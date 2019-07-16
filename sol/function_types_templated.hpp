@@ -54,7 +54,7 @@ namespace sol {
 
 		template <typename R, typename V, V variable, typename T>
 		inline int call_set_variable(std::true_type, lua_State* L, T&& mem) {
-			return call_set_assignable<R, V, variable>(std::is_assignable<std::add_lvalue_reference_t<R>, R>(), L, std::forward<T>(mem));
+			return call_set_assignable<R, V, variable>(std::is_assignable<tao::add_lvalue_reference_t<R>, R>(), L, std::forward<T>(mem));
 		}
 
 		template <typename V, V variable>

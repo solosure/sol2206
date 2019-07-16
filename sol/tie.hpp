@@ -40,9 +40,9 @@ namespace sol {
 	struct is_tieable : std::integral_constant<bool, (::sol::tie_size<T>::value > 0)> {};
 
 	template <typename... Tn>
-	struct tie_t : public std::tuple<std::add_lvalue_reference_t<Tn>...> {
+	struct tie_t : public std::tuple<tao::add_lvalue_reference_t<Tn>...> {
 	private:
-		typedef std::tuple<std::add_lvalue_reference_t<Tn>...> base_t;
+		typedef std::tuple<tao::add_lvalue_reference_t<Tn>...> base_t;
 
 		template <typename T>
 		void set(std::false_type, T&& target) {

@@ -291,7 +291,7 @@ namespace sol {
 			template <typename... Args>
 			static int call_const(std::false_type, lua_State* L, Args&&... args) {
 				typedef meta::unwrapped_t<T> R;
-				return call_assign(std::is_assignable<std::add_lvalue_reference_t<meta::unqualified_t<R>>, R>(), L, std::forward<Args>(args)...);
+				return call_assign(std::is_assignable<tao::add_lvalue_reference_t<meta::unqualified_t<R>>, R>(), L, std::forward<Args>(args)...);
 			}
 
 			template <typename... Args>

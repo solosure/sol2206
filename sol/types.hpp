@@ -326,10 +326,10 @@ namespace sol {
 		operator std::add_pointer_t<tao::remove_reference_t<U>>() {
 			return std::addressof(value);
 		}
-		operator std::add_lvalue_reference_t<U>() {
+		operator tao::add_lvalue_reference_t<U>() {
 			return value;
 		}
-		operator std::add_const_t<std::add_lvalue_reference_t<U>>&() const {
+		operator std::add_const_t<tao::add_lvalue_reference_t<U>>&() const {
 			return value;
 		}
 	};
@@ -417,7 +417,7 @@ namespace sol {
 		: source(std::forward<Arg0>(arg0), std::forward<Arg1>(arg1), std::forward<Args>(args)...) {
 		}
 
-		operator std::add_lvalue_reference_t<T>() {
+		operator tao::add_lvalue_reference_t<T>() {
 			return source;
 		}
 	};
@@ -440,7 +440,7 @@ namespace sol {
 		: source(std::forward<Arg0>(arg0), std::forward<Arg1>(arg1), std::forward<Args>(args)...) {
 		}
 
-		operator std::add_lvalue_reference_t<T>() {
+		operator tao::add_lvalue_reference_t<T>() {
 			return source;
 		}
 	};

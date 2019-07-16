@@ -416,7 +416,7 @@ namespace stack {
 
 	template <typename T>
 	struct getter<user<T>> {
-		static std::add_lvalue_reference_t<T> get(lua_State* L, int index, record& tracking) {
+		static tao::add_lvalue_reference_t<T> get(lua_State* L, int index, record& tracking) {
 			tracking.use(1);
 			void* memory = lua_touserdata(L, index);
 			memory = detail::align_user<T>(memory);
