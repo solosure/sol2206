@@ -70,6 +70,18 @@ struct equal_to
 	}
 };
 
+template<>
+struct equal_to<void>
+{
+	typedef int is_transparent;
+
+	template<class T1, class T2>
+	constexpr auto operator()(T1 && t1, T2 && t2) const -> decltype(static_cast<T1&&>(t1) == static_cast<T2&&>(t2))
+	{
+		return (static_cast<T1&&>(t1) == static_cast<T2&&>(t2));
+	}
+};
+
 // add_pointer_t
 template< class T >
 using add_pointer_t = typename std::add_pointer<T>::type;
