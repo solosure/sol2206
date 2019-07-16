@@ -45,7 +45,7 @@ namespace sol {
 			return std::move(source);
 		}
 
-		operator tao::add_lvalue_reference_t<std::add_const_t<T>>() const {
+		operator tao::add_lvalue_reference_t<tao::add_const_t<T>>() const {
 			return source;
 		}
 	};

@@ -71,6 +71,10 @@ struct equal_to
 template< class T >
 using add_pointer_t = typename std::add_pointer<T>::type;
 
+// add_const_t
+template< class T >
+using add_const_t = typename std::add_const<T>::type;
+
 // is_final
 // see https://stackoverflow.com/questions/13809359/how-to-detect-if-a-class-is-final-in-c11
 template<class T>

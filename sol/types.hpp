@@ -329,7 +329,7 @@ namespace sol {
 		operator tao::add_lvalue_reference_t<U>() {
 			return value;
 		}
-		operator std::add_const_t<tao::add_lvalue_reference_t<U>>&() const {
+		operator tao::add_const_t<tao::add_lvalue_reference_t<U>>&() const {
 			return value;
 		}
 	};
