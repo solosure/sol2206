@@ -825,7 +825,7 @@ namespace sol {
 		struct is_container<T, tao::enable_if_t<meta::is_string_like<meta::unqualified_t<T>>::value>> : std::false_type {};
 
 		template <typename T>
-		struct is_container<T, tao::enable_if_t<meta::all<std::is_array<meta::unqualified_t<T>>, meta::neg<meta::any_same<std::remove_all_extents_t<meta::unqualified_t<T>>, char, wchar_t, char16_t, char32_t>>>::value>> : std::true_type {};
+		struct is_container<T, tao::enable_if_t<meta::all<std::is_array<meta::unqualified_t<T>>, meta::neg<meta::any_same<tao::remove_all_extents_t<meta::unqualified_t<T>>, char, wchar_t, char16_t, char32_t>>>::value>> : std::true_type {};
 
 		template <typename T>
 		struct is_container<T, tao::enable_if_t<meta::all<meta::has_begin_end<meta::unqualified_t<T>>, meta::neg<is_initializer_list<meta::unqualified_t<T>>>, meta::neg<meta::is_string_like<meta::unqualified_t<T>>>>::value>> : std::true_type {};
