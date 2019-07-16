@@ -131,7 +131,7 @@ namespace sol {
 		};
 
 		template <typename T>
-		struct has_find_test<T, std::enable_if_t<meta::is_lookup<T>::value>> {
+		struct has_find_test<T, tao::enable_if_t<meta::is_lookup<T>::value>> {
 		private:
 			typedef std::array<char, 1> one;
 			typedef std::array<char, 2> two;
@@ -558,7 +558,7 @@ namespace sol {
 		};
 
 		template <typename X>
-		struct container_traits_default<X, std::enable_if_t<meta::all<is_forced_container<meta::unqualified_t<X>>, meta::has_value_type<meta::unqualified_t<container_decay_t<X>>>, meta::has_iterator<meta::unqualified_t<container_decay_t<X>>>>::value>> {
+		struct container_traits_default<X, tao::enable_if_t<meta::all<is_forced_container<meta::unqualified_t<X>>, meta::has_value_type<meta::unqualified_t<container_decay_t<X>>>, meta::has_iterator<meta::unqualified_t<container_decay_t<X>>>>::value>> {
 		private:
 			typedef tao::remove_pointer_t<meta::unwrap_unqualified_t<container_decay_t<X>>> T;
 
@@ -1311,7 +1311,7 @@ namespace sol {
 		};
 
 		template <typename X>
-		struct container_traits_default<X, std::enable_if_t<std::is_array<tao::remove_pointer_t<meta::unwrap_unqualified_t<X>>>::value>> {
+		struct container_traits_default<X, tao::enable_if_t<std::is_array<tao::remove_pointer_t<meta::unwrap_unqualified_t<X>>>::value>> {
 		private:
 			typedef tao::remove_pointer_t<meta::unwrap_unqualified_t<X>> T;
 			typedef container_traits<X> deferred_traits;

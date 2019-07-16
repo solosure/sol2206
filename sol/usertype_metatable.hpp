@@ -474,7 +474,7 @@ namespace sol {
 			newindexbaseclasspropogation = usertype_detail::walk_all_bases<false, Bases...>;
 		}
 
-		template <std::size_t Idx, typename N, typename F, typename = std::enable_if_t<!meta::any_same<meta::unqualified_t<N>, base_classes_tag, call_construction>::value>>
+		template <std::size_t Idx, typename N, typename F, typename = tao::enable_if_t<!meta::any_same<meta::unqualified_t<N>, base_classes_tag, call_construction>::value>>
 		void make_regs(regs_t& l, int& index, N&& n, F&&) {
 			if (is_variable_binding<meta::unqualified_t<F>>::value) {
 				return;
@@ -525,7 +525,7 @@ namespace sol {
 			++index;
 		}
 
-		template <typename... Args, typename = std::enable_if_t<sizeof...(Args) == sizeof...(Tn)>>
+		template <typename... Args, typename = tao::enable_if_t<sizeof...(Args) == sizeof...(Tn)>>
 		usertype_metatable(Args&&... args)
 		: usertype_metatable_core(&usertype_detail::indexing_fail<T, true>, &usertype_detail::metatable_new_index<T, false>), usertype_detail::registrar(), functions(std::forward<Args>(args)...), destructfunc(nullptr), callconstructfunc(nullptr), indexbase(&core_indexing_call<true>), newindexbase(&core_indexing_call<false>), indexbaseclasspropogation(usertype_detail::walk_all_bases<true>), newindexbaseclasspropogation(usertype_detail::walk_all_bases<false>), baseclasscheck(nullptr), baseclasscast(nullptr), secondarymeta(contains_variable()), properties() {
 			properties.reset();

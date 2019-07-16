@@ -361,7 +361,7 @@ namespace sol {
 		struct lua_call_wrapper : agnostic_lua_call_wrapper<F, is_index, is_variable, checked, boost, clean_stack> {};
 
 		template <typename T, typename F, bool is_index, bool is_variable, bool checked, int boost, bool clean_stack>
-		struct lua_call_wrapper<T, F, is_index, is_variable, checked, boost, clean_stack, std::enable_if_t<std::is_member_function_pointer<F>::value>> {
+		struct lua_call_wrapper<T, F, is_index, is_variable, checked, boost, clean_stack, tao::enable_if_t<std::is_member_function_pointer<F>::value>> {
 			typedef wrapper<meta::unqualified_t<F>> wrap;
 			typedef typename wrap::object_type object_type;
 
@@ -391,7 +391,7 @@ namespace sol {
 		};
 
 		template <typename T, typename F, bool is_variable, bool checked, int boost, bool clean_stack>
-		struct lua_call_wrapper<T, F, false, is_variable, checked, boost, clean_stack, std::enable_if_t<std::is_member_object_pointer<F>::value>> {
+		struct lua_call_wrapper<T, F, false, is_variable, checked, boost, clean_stack, tao::enable_if_t<std::is_member_object_pointer<F>::value>> {
 			typedef lua_bind_traits<F> traits_type;
 			typedef wrapper<meta::unqualified_t<F>> wrap;
 			typedef typename wrap::object_type object_type;
@@ -450,7 +450,7 @@ namespace sol {
 		};
 
 		template <typename T, typename F, bool is_variable, bool checked, int boost, bool clean_stack>
-		struct lua_call_wrapper<T, F, true, is_variable, checked, boost, clean_stack, std::enable_if_t<std::is_member_object_pointer<F>::value>> {
+		struct lua_call_wrapper<T, F, true, is_variable, checked, boost, clean_stack, tao::enable_if_t<std::is_member_object_pointer<F>::value>> {
 			typedef lua_bind_traits<F> traits_type;
 			typedef wrapper<meta::unqualified_t<F>> wrap;
 			typedef typename wrap::object_type object_type;
@@ -558,7 +558,7 @@ namespace sol {
 		};
 
 		template <typename T, typename Fx, bool is_index, bool is_variable, bool checked, int boost, bool clean_stack>
-		struct lua_call_wrapper<T, destructor_wrapper<Fx>, is_index, is_variable, checked, boost, clean_stack, std::enable_if_t<std::is_void<Fx>::value>> {
+		struct lua_call_wrapper<T, destructor_wrapper<Fx>, is_index, is_variable, checked, boost, clean_stack, tao::enable_if_t<std::is_void<Fx>::value>> {
 			typedef destructor_wrapper<Fx> F;
 
 			static int call(lua_State* L, const F&) {
@@ -567,7 +567,7 @@ namespace sol {
 		};
 
 		template <typename T, typename Fx, bool is_index, bool is_variable, bool checked, int boost, bool clean_stack>
-		struct lua_call_wrapper<T, destructor_wrapper<Fx>, is_index, is_variable, checked, boost, clean_stack, std::enable_if_t<!std::is_void<Fx>::value>> {
+		struct lua_call_wrapper<T, destructor_wrapper<Fx>, is_index, is_variable, checked, boost, clean_stack, tao::enable_if_t<!std::is_void<Fx>::value>> {
 			typedef destructor_wrapper<Fx> F;
 
 			static int call_void(std::true_type, lua_State* L, const F& f) {
@@ -739,7 +739,7 @@ namespace sol {
 		struct is_var_bind : std::false_type {};
 
 		template <typename T>
-		struct is_var_bind<T, std::enable_if_t<std::is_member_object_pointer<T>::value>> : std::true_type {};
+		struct is_var_bind<T, tao::enable_if_t<std::is_member_object_pointer<T>::value>> : std::true_type {};
 
 		template <>
 		struct is_var_bind<no_prop> : std::true_type {};

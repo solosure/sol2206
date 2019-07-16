@@ -144,7 +144,7 @@ namespace stack {
 	};
 
 	template <typename T>
-	struct pusher<T, std::enable_if_t<is_unique_usertype<T>::value>> {
+	struct pusher<T, tao::enable_if_t<is_unique_usertype<T>::value>> {
 		typedef typename unique_usertype_traits<T>::type P;
 		typedef typename unique_usertype_traits<T>::actual_type Real;
 
@@ -196,7 +196,7 @@ namespace stack {
 	};
 
 	template <typename T>
-	struct pusher<T, std::enable_if_t<std::is_floating_point<T>::value>> {
+	struct pusher<T, tao::enable_if_t<std::is_floating_point<T>::value>> {
 		static int push(lua_State* L, const T& value) {
 			lua_pushnumber(L, value);
 			return 1;
@@ -204,7 +204,7 @@ namespace stack {
 	};
 
 	template <typename T>
-	struct pusher<T, std::enable_if_t<std::is_integral<T>::value>> {
+	struct pusher<T, tao::enable_if_t<std::is_integral<T>::value>> {
 		static int push(lua_State* L, const T& value) {
 #if SOL_LUA_VERSION >= 503
 			static auto integer_value_fits = [](T const& value) {
@@ -240,7 +240,7 @@ namespace stack {
 	};
 
 	template <typename T>
-	struct pusher<T, std::enable_if_t<std::is_enum<T>::value>> {
+	struct pusher<T, tao::enable_if_t<std::is_enum<T>::value>> {
 		static int push(lua_State* L, const T& value) {
 			if (std::is_same<char, std::underlying_type_t<T>>::value) {
 				return stack::push(L, static_cast<int>(value));
@@ -321,21 +321,21 @@ namespace stack {
 	};
 
 	template <typename T>
-	struct pusher<as_table_t<T>, std::enable_if_t<is_container<tao::remove_pointer_t<meta::unwrap_unqualified_t<T>>>::value>> {
+	struct pusher<as_table_t<T>, tao::enable_if_t<is_container<tao::remove_pointer_t<meta::unwrap_unqualified_t<T>>>::value>> {
 		static int push(lua_State* L, const T& tablecont) {
 			return stack::push<detail::as_table_tag<T>>(L, tablecont);
 		}
 	};
 
 	template <typename T>
-	struct pusher<as_table_t<T>, std::enable_if_t<!is_container<tao::remove_pointer_t<meta::unwrap_unqualified_t<T>>>::value>> {
+	struct pusher<as_table_t<T>, tao::enable_if_t<!is_container<tao::remove_pointer_t<meta::unwrap_unqualified_t<T>>>::value>> {
 		static int push(lua_State* L, const T& v) {
 			return stack::push(L, v);
 		}
 	};
 
 	template <typename T>
-	struct pusher<nested<T>, std::enable_if_t<is_container<tao::remove_pointer_t<meta::unwrap_unqualified_t<T>>>::value>> {
+	struct pusher<nested<T>, tao::enable_if_t<is_container<tao::remove_pointer_t<meta::unwrap_unqualified_t<T>>>::value>> {
 		static int push(lua_State* L, const T& tablecont) {
 			pusher<detail::as_table_tag<T>> p{};
 			// silence annoying VC++ warning
@@ -345,7 +345,7 @@ namespace stack {
 	};
 
 	template <typename T>
-	struct pusher<nested<T>, std::enable_if_t<!is_container<tao::remove_pointer_t<meta::unwrap_unqualified_t<T>>>::value>> {
+	struct pusher<nested<T>, tao::enable_if_t<!is_container<tao::remove_pointer_t<meta::unwrap_unqualified_t<T>>>::value>> {
 		static int push(lua_State* L, const T& tablecont) {
 			pusher<meta::unqualified_t<T>> p{};
 			// silence annoying VC++ warning
@@ -365,7 +365,7 @@ namespace stack {
 	};
 
 	template <typename T>
-	struct pusher<T, std::enable_if_t<is_lua_reference<T>::value>> {
+	struct pusher<T, tao::enable_if_t<is_lua_reference<T>::value>> {
 		static int push(lua_State* L, const T& ref) {
 			return ref.push(L);
 		}
@@ -948,7 +948,7 @@ namespace stack {
 	};
 
 	template <typename Ch, typename Traits, typename Al>
-	struct pusher<std::basic_string<Ch, Traits, Al>, std::enable_if_t<!std::is_same<Ch, char>::value>> {
+	struct pusher<std::basic_string<Ch, Traits, Al>, tao::enable_if_t<!std::is_same<Ch, char>::value>> {
 		static int push(lua_State* L, const std::basic_string<Ch, Traits, Al>& wstr) {
 			return push(L, wstr, wstr.size());
 		}

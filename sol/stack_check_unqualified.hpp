@@ -98,7 +98,7 @@ namespace stack {
 	struct qualified_checker : checker<meta::unqualified_t<T>, lua_type_of<meta::unqualified_t<T>>::value, C> {};
 
 	template <typename T>
-	struct checker<T, type::number, std::enable_if_t<std::is_integral<T>::value>> {
+	struct checker<T, type::number, tao::enable_if_t<std::is_integral<T>::value>> {
 		template <typename Handler>
 		static bool check(lua_State* L, int index, Handler&& handler, record& tracking) {
 			tracking.use(1);
@@ -161,7 +161,7 @@ namespace stack {
 	};
 
 	template <typename T>
-	struct checker<T, type::number, std::enable_if_t<std::is_floating_point<T>::value>> {
+	struct checker<T, type::number, tao::enable_if_t<std::is_floating_point<T>::value>> {
 		template <typename Handler>
 		static bool check(lua_State* L, int index, Handler&& handler, record& tracking) {
 			tracking.use(1);
@@ -529,7 +529,7 @@ namespace stack {
 	};
 
 	template <typename X>
-	struct checker<X, type::userdata, std::enable_if_t<is_unique_usertype<X>::value>> {
+	struct checker<X, type::userdata, tao::enable_if_t<is_unique_usertype<X>::value>> {
 		typedef typename unique_usertype_traits<X>::type T;
 		template <typename Handler>
 		static bool check(lua_State* L, int index, Handler&& handler, record& tracking) {

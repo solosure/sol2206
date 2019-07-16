@@ -31,7 +31,7 @@ namespace stack {
 
 #if 0
 	template <typename X>
-	struct qualified_checker<X, type::userdata, std::enable_if_t<is_unique_usertype<X>::value && !std::is_reference<X>::value>> {
+	struct qualified_checker<X, type::userdata, tao::enable_if_t<is_unique_usertype<X>::value && !std::is_reference<X>::value>> {
 		typedef unique_usertype_traits<meta::unqualified_t<X>> u_traits;
 		typedef typename u_traits::type T;
 		
@@ -82,7 +82,7 @@ namespace stack {
 #endif // Not implemented right now...
 
 	template <typename X>
-	struct qualified_checker<X, type::userdata, std::enable_if_t<is_container<meta::unqualified_t<X>>::value && !std::is_reference<X>::value>> {
+	struct qualified_checker<X, type::userdata, tao::enable_if_t<is_container<meta::unqualified_t<X>>::value && !std::is_reference<X>::value>> {
 		template <typename Handler>
 		static bool check(lua_State* L, int index, Handler&& handler, record& tracking) {
 			if (type_of(L, index) == type::userdata) {

@@ -54,7 +54,7 @@ namespace sol {
 	};
 
 	template <typename F>
-	struct wrapper<F, std::enable_if_t<std::is_function<tao::remove_pointer_t<meta::unqualified_t<F>>>::value>> {
+	struct wrapper<F, tao::enable_if_t<std::is_function<tao::remove_pointer_t<meta::unqualified_t<F>>>::value>> {
 		typedef lua_bind_traits<tao::remove_pointer_t<meta::unqualified_t<F>>> traits_type;
 		typedef typename traits_type::args_list args_list;
 		typedef typename traits_type::args_list free_args_list;
@@ -87,7 +87,7 @@ namespace sol {
 	};
 
 	template <typename F>
-	struct wrapper<F, std::enable_if_t<std::is_member_object_pointer<meta::unqualified_t<F>>::value>> {
+	struct wrapper<F, tao::enable_if_t<std::is_member_object_pointer<meta::unqualified_t<F>>::value>> {
 		typedef lua_bind_traits<meta::unqualified_t<F>> traits_type;
 		typedef typename traits_type::object_type object_type;
 		typedef typename traits_type::return_type return_type;

@@ -54,7 +54,7 @@ namespace stack {
 	};
 
 	template <typename T>
-	struct check_getter<T, std::enable_if_t<is_lua_reference<T>::value>> {
+	struct check_getter<T, tao::enable_if_t<is_lua_reference<T>::value>> {
 		template <typename Handler>
 		static optional<T> get(lua_State* L, int index, Handler&& handler, record& tracking) {
 			// actually check if it's none here, otherwise
@@ -71,7 +71,7 @@ namespace stack {
 	};
 
 	template <typename T>
-	struct check_getter<T, std::enable_if_t<std::is_integral<T>::value && lua_type_of<T>::value == type::number>> {
+	struct check_getter<T, tao::enable_if_t<std::is_integral<T>::value && lua_type_of<T>::value == type::number>> {
 		template <typename Handler>
 		static optional<T> get(lua_State* L, int index, Handler&& handler, record& tracking) {
 #if SOL_LUA_VERSION >= 503
@@ -102,7 +102,7 @@ namespace stack {
 	};
 
 	template <typename T>
-	struct check_getter<T, std::enable_if_t<std::is_enum<T>::value && !meta::any_same<T, meta_function, type>::value>> {
+	struct check_getter<T, tao::enable_if_t<std::is_enum<T>::value && !meta::any_same<T, meta_function, type>::value>> {
 		template <typename Handler>
 		static optional<T> get(lua_State* L, int index, Handler&& handler, record& tracking) {
 			int isnum = 0;
@@ -119,7 +119,7 @@ namespace stack {
 	};
 
 	template <typename T>
-	struct check_getter<T, std::enable_if_t<std::is_floating_point<T>::value>> {
+	struct check_getter<T, tao::enable_if_t<std::is_floating_point<T>::value>> {
 		template <typename Handler>
 		static optional<T> get(lua_State* L, int index, Handler&& handler, record& tracking) {
 			int isnum = 0;

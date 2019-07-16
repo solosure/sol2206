@@ -66,7 +66,7 @@ namespace stack {
 	struct qualified_getter : getter<meta::unqualified_t<T>, C> {};
 
 	template <typename T>
-	struct getter<T, std::enable_if_t<std::is_floating_point<T>::value>> {
+	struct getter<T, tao::enable_if_t<std::is_floating_point<T>::value>> {
 		static T get(lua_State* L, int index, record& tracking) {
 			tracking.use(1);
 			return static_cast<T>(lua_tonumber(L, index));
@@ -74,7 +74,7 @@ namespace stack {
 	};
 
 	template <typename T>
-	struct getter<T, std::enable_if_t<std::is_integral<T>::value>> {
+	struct getter<T, tao::enable_if_t<std::is_integral<T>::value>> {
 		static T get(lua_State* L, int index, record& tracking) {
 			tracking.use(1);
 #if SOL_LUA_VERSION >= 503
@@ -87,7 +87,7 @@ namespace stack {
 	};
 
 	template <typename T>
-	struct getter<T, std::enable_if_t<std::is_enum<T>::value>> {
+	struct getter<T, tao::enable_if_t<std::is_enum<T>::value>> {
 		static T get(lua_State* L, int index, record& tracking) {
 			tracking.use(1);
 			return static_cast<T>(lua_tointegerx(L, index, nullptr));
@@ -348,7 +348,7 @@ namespace stack {
 	};
 
 	template <typename T>
-	struct getter<nested<T>, std::enable_if_t<!is_container<T>::value>> {
+	struct getter<nested<T>, tao::enable_if_t<!is_container<T>::value>> {
 		static T get(lua_State* L, int index, record& tracking) {
 			getter<T> g;
 			// VC++ has a bad warning here: shut it up
@@ -358,7 +358,7 @@ namespace stack {
 	};
 
 	template <typename T>
-	struct getter<nested<T>, std::enable_if_t<meta::all<is_container<T>, meta::neg<meta::has_key_value_pair<meta::unqualified_t<T>>>>::value>> {
+	struct getter<nested<T>, tao::enable_if_t<meta::all<is_container<T>, meta::neg<meta::has_key_value_pair<meta::unqualified_t<T>>>>::value>> {
 		static T get(lua_State* L, int index, record& tracking) {
 			typedef typename T::value_type V;
 			getter<as_table_t<T>> g;
@@ -369,7 +369,7 @@ namespace stack {
 	};
 
 	template <typename T>
-	struct getter<nested<T>, std::enable_if_t<meta::all<is_container<T>, meta::has_key_value_pair<meta::unqualified_t<T>>>::value>> {
+	struct getter<nested<T>, tao::enable_if_t<meta::all<is_container<T>, meta::has_key_value_pair<meta::unqualified_t<T>>>::value>> {
 		static T get(lua_State* L, int index, record& tracking) {
 			typedef typename T::value_type P;
 			typedef typename P::first_type K;
@@ -382,7 +382,7 @@ namespace stack {
 	};
 
 	template <typename T>
-	struct getter<T, std::enable_if_t<is_lua_reference<T>::value>> {
+	struct getter<T, tao::enable_if_t<is_lua_reference<T>::value>> {
 		static T get(lua_State* L, int index, record& tracking) {
 			tracking.use(1);
 			return T(L, index);
@@ -843,7 +843,7 @@ namespace stack {
 	};
 
 	template <typename T>
-	struct getter<T, std::enable_if_t<is_unique_usertype<T>::value>> {
+	struct getter<T, tao::enable_if_t<is_unique_usertype<T>::value>> {
 		typedef typename unique_usertype_traits<T>::type P;
 		typedef typename unique_usertype_traits<T>::actual_type Real;
 

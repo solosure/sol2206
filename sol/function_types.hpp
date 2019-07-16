@@ -288,7 +288,7 @@ namespace sol {
 		};
 
 		template <typename Signature>
-		struct pusher<Signature, std::enable_if_t<std::is_member_pointer<Signature>::value>> {
+		struct pusher<Signature, tao::enable_if_t<std::is_member_pointer<Signature>::value>> {
 			template <typename F, typename... Args>
 			static int push(lua_State* L, F&& f, Args&&... args) {
 				pusher<function_sig<>> p{};
@@ -298,7 +298,7 @@ namespace sol {
 		};
 
 		template <typename Signature>
-		struct pusher<Signature, std::enable_if_t<meta::all<std::is_function<tao::remove_pointer_t<Signature>>, meta::neg<std::is_same<Signature, lua_CFunction>>, meta::neg<std::is_same<Signature, tao::remove_pointer_t<lua_CFunction>>>
+		struct pusher<Signature, tao::enable_if_t<meta::all<std::is_function<tao::remove_pointer_t<Signature>>, meta::neg<std::is_same<Signature, lua_CFunction>>, meta::neg<std::is_same<Signature, tao::remove_pointer_t<lua_CFunction>>>
 #if defined(SOL_NOEXCEPT_FUNCTION_TYPE) && SOL_NOEXCEPT_FUNCTION_TYPE
 			,
 								meta::neg<std::is_same<Signature, detail::lua_CFunction_noexcept>>, meta::neg<std::is_same<Signature, tao::remove_pointer_t<detail::lua_CFunction_noexcept>>>
@@ -347,7 +347,7 @@ namespace sol {
 		};
 
 		template <typename F, typename G>
-		struct pusher<property_wrapper<F, G>, std::enable_if_t<!std::is_void<F>::value && !std::is_void<G>::value>> {
+		struct pusher<property_wrapper<F, G>, tao::enable_if_t<!std::is_void<F>::value && !std::is_void<G>::value>> {
 			static int push(lua_State* L, property_wrapper<F, G>&& pw) {
 				return stack::push(L, overload(std::move(pw.read), std::move(pw.write)));
 			}
