@@ -428,14 +428,14 @@ namespace sol {
 
 		template <typename T>
 		struct getter<as_container_t<T>> {
-			static decltype(auto) get(lua_State* L, int index, record& tracking) {
+			static auto get(lua_State* L, int index, record& tracking) -> decltype(stack::unqualified_get<T>(L, index, tracking)) {
 				return stack::unqualified_get<T>(L, index, tracking);
 			}
 		};
 
 		template <typename T>
 		struct getter<as_container_t<T>*> {
-			static decltype(auto) get(lua_State* L, int index, record& tracking) {
+			static auto get(lua_State* L, int index, record& tracking) -> decltype(stack::unqualified_get<T*>(L, index, tracking)) {
 				return stack::unqualified_get<T*>(L, index, tracking);
 			}
 		};

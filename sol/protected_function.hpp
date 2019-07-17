@@ -253,18 +253,8 @@ namespace sol {
 #endif // Safety
 		}
 
-		template <typename... Args>
-		protected_function_result operator()(Args&&... args) const {
-			return call<>(std::forward<Args>(args)...);
-		}
-
 		template <typename... Ret, typename... Args>
-		decltype(auto) operator()(types<Ret...>, Args&&... args) const {
-			return call<Ret...>(std::forward<Args>(args)...);
-		}
-
-		template <typename... Ret, typename... Args>
-		decltype(auto) call(Args&&... args) const {
+		auto call(Args&&... args) const -> decltype(invoke(types<Ret...>(), tao::seq::make_index_sequence<sizeof...(Ret)>(), 1, *(new detail::protected_handler<false, handler_t>(error_handler)))) {
 			if (!aligned) {
 				// we do not expect the function to already be on the stack: push it
 				if (error_handler.valid()) {
@@ -304,6 +294,16 @@ namespace sol {
 					return invoke(types<Ret...>(), tao::seq::make_index_sequence<sizeof...(Ret)>(), pushcount, h);
 				}
 			}
+		}
+
+		template <typename... Args>
+		protected_function_result operator()(Args&&... args) const {
+			return call<>(std::forward<Args>(args)...);
+		}
+
+		template <typename... Ret, typename... Args>
+		auto operator()(types<Ret...>, Args&&... args) const -> decltype(call<Ret...>(std::forward<Args>(args)...)) {
+			return call<Ret...>(std::forward<Args>(args)...);
 		}
 	};
 } // namespace sol

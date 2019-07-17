@@ -31,7 +31,7 @@
 
 namespace sol {
 	template <typename... Ret, typename... Args>
-	inline decltype(auto) stack_proxy::call(Args&&... args) {
+	inline auto stack_proxy::call(Args&&... args) -> decltype(stack_function(this->lua_state(), this->stack_index()).template call<Ret...>(std::forward<Args>(args)...)) {
 		stack_function sf(this->lua_state(), this->stack_index());
 		return sf.template call<Ret...>(std::forward<Args>(args)...);
 	}

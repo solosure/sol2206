@@ -65,7 +65,7 @@ namespace sol {
 			auto& mem = stack::get<T>(L, 1);
 			switch (lua_gettop(L)) {
 			case 1: {
-				decltype(auto) r = (mem.*variable);
+				auto r = (mem.*variable);
 				stack::push_reference(L, std::forward<decltype(r)>(r));
 				return 1;
 			}

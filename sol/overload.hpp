@@ -42,7 +42,7 @@ namespace sol {
 	};
 
 	template <typename... Args>
-	decltype(auto) overload(Args&&... args) {
+	auto overload(Args&&... args) -> decltype(overload_set<tao::decay_t<Args>...>(std::forward<Args>(args)...)) {
 		return overload_set<tao::decay_t<Args>...>(std::forward<Args>(args)...);
 	}
 } // namespace sol

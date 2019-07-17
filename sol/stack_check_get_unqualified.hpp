@@ -137,7 +137,7 @@ namespace stack {
 
 	template <typename T>
 	struct getter<optional<T>> {
-		static decltype(auto) get(lua_State* L, int index, record& tracking) {
+		static auto get(lua_State* L, int index, record& tracking) -> decltype(check_get<T>(L, index, no_panic, tracking)) {
 			return check_get<T>(L, index, no_panic, tracking);
 		}
 	};

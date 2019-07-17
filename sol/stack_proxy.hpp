@@ -37,10 +37,10 @@ namespace sol {
 		}
 
 		template <typename... Ret, typename... Args>
-		decltype(auto) call(Args&&... args);
+		auto call(Args&&... args) -> decltype(stack_function(this->lua_state(), this->stack_index()).template call<Ret...>(std::forward<Args>(args)...));
 
 		template <typename... Args>
-		decltype(auto) operator()(Args&&... args) {
+		auto operator()(Args&&... args) -> decltype(call<>(std::forward<Args>(args)...)) {
 			return call<>(std::forward<Args>(args)...);
 		}
 	};
