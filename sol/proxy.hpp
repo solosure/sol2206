@@ -34,9 +34,12 @@ namespace sol {
 	struct proxy : public proxy_base<proxy<Table, Key>> {
 	private:
 		typedef meta::condition<meta::is_specialization_of<Key, std::tuple>, Key, std::tuple<meta::condition<std::is_array<meta::unqualified_t<Key>>, Key&, meta::unqualified_t<Key>>>> key_type;
-
+	public:
+		Table tbl;
+		key_type key;
+	private:
 		template <typename T, std::size_t... I>
-		decltype(auto) tuple_get(tao::seq::index_sequence<I...>) const {
+		auto tuple_get(tao::seq::index_sequence<I...>) const -> decltype(tbl.template traverse_get<T>(std::get<I>(key)...)) {
 			return tbl.template traverse_get<T>(std::get<I>(key)...);
 		}
 
@@ -59,9 +62,6 @@ namespace sol {
 		}
 
 	public:
-		Table tbl;
-		key_type key;
-
 		template <typename T>
 		proxy(Table table, T&& k)
 		: tbl(table), key(std::forward<T>(k)) {
@@ -95,12 +95,12 @@ namespace sol {
 		}
 
 		template <typename T>
-		decltype(auto) get() const {
+		auto get() const -> decltype(tuple_get<T>(tao::seq::make_index_sequence<std::tuple_size<meta::unqualified_t<key_type>>::value>())) {
 			return tuple_get<T>(tao::seq::make_index_sequence<std::tuple_size<meta::unqualified_t<key_type>>::value>());
 		}
 
 		template <typename T>
-		decltype(auto) get_or(T&& otherwise) const {
+		auto get_or(T&& otherwise) const -> decltype(static_cast<decltype(get<T>())>(std::forward<T>(otherwise))) {
 			typedef decltype(get<T>()) U;
 			optional<U> option = get<optional<U>>();
 			if (option) {
@@ -110,7 +110,7 @@ namespace sol {
 		}
 
 		template <typename T, typename D>
-		decltype(auto) get_or(D&& otherwise) const {
+		auto get_or(D&& otherwise) const -> decltype(static_cast<T>(std::forward<D>(otherwise))) {
 			optional<T> option = get<optional<T>>();
 			if (option) {
 				return static_cast<T>(option.value());
@@ -118,28 +118,27 @@ namespace sol {
 			return static_cast<T>(std::forward<D>(otherwise));
 		}
 
-		
-		template <typename T>
-		decltype(auto) get_or_create() {
-			return get_or_create<T>(new_table());
-		}
-
 		template <typename T, typename Otherwise>
-		decltype(auto) get_or_create(Otherwise&& other) {
+		auto get_or_create(Otherwise&& other) -> decltype(get<T>()) {
 			if (!this->valid()) {
 				this->set(std::forward<Otherwise>(other));
 			}
 			return get<T>();
 		}
+		
+		template <typename T>
+		auto get_or_create() -> decltype(get_or_create<T>(new_table())) {
+			return get_or_create<T>(new_table());
+		}
 
 		template <typename K>
-		decltype(auto) operator[](K&& k) const {
+		auto operator[](K&& k) const -> decltype(proxy<Table, decltype(meta::tuplefy(key, std::forward<K>(k)))>(tbl, std::move(meta::tuplefy(key, std::forward<K>(k))))) {
 			auto keys = meta::tuplefy(key, std::forward<K>(k));
 			return proxy<Table, decltype(keys)>(tbl, std::move(keys));
 		}
 
 		template <typename... Ret, typename... Args>
-		decltype(auto) call(Args&&... args) {
+		auto call(Args&&... args) -> decltype(get<function>().template call<Ret...>(std::forward<Args>(args)...)) {
 #if !defined(__clang__) && defined(_MSC_FULL_VER) && _MSC_FULL_VER >= 191200000
 			// MSVC is ass sometimes
 			return get<function>().call<Ret...>(std::forward<Args>(args)...);
@@ -149,7 +148,7 @@ namespace sol {
 		}
 
 		template <typename... Args>
-		decltype(auto) operator()(Args&&... args) {
+		auto operator()(Args&&... args) -> decltype(call<>(std::forward<Args>(args)...)) {
 			return call<>(std::forward<Args>(args)...);
 		}
 
