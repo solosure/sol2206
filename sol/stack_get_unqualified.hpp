@@ -234,7 +234,7 @@ namespace stack {
 			int index = lua_absindex(L, relindex);
 			lua_pushnil(L);
 			while (lua_next(L, index) != 0) {
-				decltype(auto) key = stack::check_get<K>(L, -2);
+				auto key = stack::check_get<K>(L, -2);
 				if (!key) {
 					lua_pop(L, 1);
 					continue;
@@ -335,7 +335,7 @@ namespace stack {
 			int index = lua_absindex(L, relindex);
 			lua_pushnil(L);
 			while (lua_next(L, index) != 0) {
-				decltype(auto) key = stack::check_get<K>(L, -2);
+				auto key = stack::check_get<K>(L, -2);
 				if (!key) {
 					lua_pop(L, 1);
 					continue;
@@ -880,7 +880,7 @@ namespace stack {
 
 	template <typename A, typename B>
 	struct getter<std::pair<A, B>> {
-		static decltype(auto) get(lua_State* L, int index, record& tracking) {
+		static auto get(lua_State* L, int index, record& tracking) -> decltype(std::pair<decltype(stack::get<A>(L, index)), decltype(stack::get<B>(L, index))>{ stack::get<A>(L, index, tracking), stack::get<B>(L, index + tracking.used, tracking) }) {
 			return std::pair<decltype(stack::get<A>(L, index)), decltype(stack::get<B>(L, index))>{ stack::get<A>(L, index, tracking), stack::get<B>(L, index + tracking.used, tracking) };
 		}
 	};

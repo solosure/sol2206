@@ -33,12 +33,12 @@ namespace sol {
 namespace stack {
 	template <typename T, typename>
 	struct popper {
-		inline static decltype(auto) pop(lua_State* L) {
+		inline static auto pop(lua_State* L) -> decltype(get<T>(L, -lua_size<T>::value, *(new record()))) {
 			record tracking{};
 #ifdef __INTEL_COMPILER
 			auto&& r = get<T>(L, -lua_size<T>::value, tracking);
 #else
-			decltype(auto) r = get<T>(L, -lua_size<T>::value, tracking);
+			auto&& r = get<T>(L, -lua_size<T>::value, tracking);
 #endif
 			lua_pop(L, tracking.used);
 			return r;

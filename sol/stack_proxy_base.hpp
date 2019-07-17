@@ -42,7 +42,7 @@ namespace sol {
 		}
 
 		template <typename T>
-		decltype(auto) get() const {
+		auto get() const -> decltype(stack::get<T>(L, 1)) {
 			return stack::get<T>(L, stack_index());
 		}
 
@@ -52,7 +52,7 @@ namespace sol {
 		}
 
 		template <typename T>
-		decltype(auto) as() const {
+		auto as() const -> decltype(get<T>()) {
 			return get<T>();
 		}
 

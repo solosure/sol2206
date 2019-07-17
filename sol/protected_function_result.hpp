@@ -44,7 +44,7 @@ namespace sol {
 		call_status err;
 
 		template <typename T>
-		decltype(auto) tagged_get(types<optional<T>>, int index_offset) const {
+		auto tagged_get(types<optional<T>>, int index_offset) const -> decltype(stack::get<optional<T>>(L, 1)) {
 			typedef decltype(stack::get<optional<T>>(L, index)) ret_t;
 			int target = index + index_offset;
 			if (!valid()) {
@@ -54,7 +54,7 @@ namespace sol {
 		}
 
 		template <typename T>
-		decltype(auto) tagged_get(types<T>, int index_offset) const {
+		auto tagged_get(types<T>, int index_offset) const -> decltype(stack::get<T>(L, 1)) {
 			int target = index + index_offset;
 #if defined(SOL_SAFE_PROXIES) && SOL_SAFE_PROXIES
 			if (!valid()) {
@@ -135,7 +135,7 @@ namespace sol {
 		}
 
 		template <typename T>
-		decltype(auto) get(int index_offset = 0) const {
+		auto get(int index_offset = 0) const -> decltype(tagged_get(types<meta::unqualified_t<T>>(), index_offset)) {
 			return tagged_get(types<meta::unqualified_t<T>>(), index_offset);
 		}
 
