@@ -125,7 +125,7 @@ end
 			auto pfr = lua.safe_script(updatecode);
 			REQUIRE(pfr.valid());
 
-			sol::function update = pfr;
+			sol::function update(pfr);
 			update();
 			f3 = f2;
 			f3();

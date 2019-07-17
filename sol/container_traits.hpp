@@ -435,7 +435,7 @@ namespace sol {
 		using container_decay_t = typename container_decay<meta::unqualified_t<T>>::type;
 
 		template <typename T>
-		decltype(auto) get_key(std::false_type, T&& t) {
+		auto get_key(std::false_type, T&& t) ->decltype(std::forward<T>(t)) {
 			return std::forward<T>(t);
 		}
 

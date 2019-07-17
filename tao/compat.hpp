@@ -101,6 +101,6 @@ struct is_final
 };
 }
 
-// decltype(auto) { return xxx; } 
+// decltype(auto) func(...) { return xxx; } 
 //   to
 // auto func(...) -> decltype(xxx) { return xxx; }
