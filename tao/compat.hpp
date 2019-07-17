@@ -90,6 +90,10 @@ using add_pointer_t = typename std::add_pointer<T>::type;
 template< class T >
 using add_const_t = typename std::add_const<T>::type;
 
+// underlying_type_t
+template< class T >
+using underlying_type_t = typename std::underlying_type<T>::type;
+
 // is_final
 // see https://stackoverflow.com/questions/13809359/how-to-detect-if-a-class-is-final-in-c11
 template<class T>

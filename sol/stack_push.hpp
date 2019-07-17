@@ -242,10 +242,10 @@ namespace stack {
 	template <typename T>
 	struct pusher<T, tao::enable_if_t<std::is_enum<T>::value>> {
 		static int push(lua_State* L, const T& value) {
-			if (std::is_same<char, std::underlying_type_t<T>>::value) {
+			if (std::is_same<char, tao::underlying_type_t<T>>::value) {
 				return stack::push(L, static_cast<int>(value));
 			}
-			return stack::push(L, static_cast<std::underlying_type_t<T>>(value));
+			return stack::push(L, static_cast<tao::underlying_type_t<T>>(value));
 		}
 	};
 
