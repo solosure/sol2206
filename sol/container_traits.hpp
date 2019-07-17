@@ -743,7 +743,7 @@ namespace sol {
 			}
 
 			static error_result set_category(std::input_iterator_tag, lua_State* L, T& self, stack_object okey, stack_object value) {
-				decltype(auto) key = okey.as<K>();
+				auto key = okey.as<K>();
 				key += deferred_traits::index_adjustment(L, self);
 				auto e = deferred_traits::end(L, self);
 				auto it = deferred_traits::begin(L, self);
@@ -761,7 +761,7 @@ namespace sol {
 			}
 
 			static error_result set_category(std::random_access_iterator_tag, lua_State* L, T& self, stack_object okey, stack_object value) {
-				decltype(auto) key = okey.as<K>();
+				auto key = okey.as<K>();
 				if (key <= 0) {
 					return error_result("sol: out of bounds (too small) for set on '%s'", detail::demangle<T>().c_str());
 				}
@@ -778,7 +778,7 @@ namespace sol {
 			}
 
 			static error_result set_comparative(std::true_type, lua_State* L, T& self, stack_object okey, stack_object value) {
-				decltype(auto) key = okey.as<K>();
+				auto key = okey.as<K>();
 				if (!is_writable::value) {
 					return error_result("cannot perform a 'set': '%s's iterator reference is not writable (non-copy-assignable or const)", detail::demangle<T>().data());
 				}
@@ -808,7 +808,7 @@ namespace sol {
 			}
 
 			static error_result set_associative_find(std::true_type, lua_State* L, T& self, stack_object okey, stack_object value) {
-				decltype(auto) key = okey.as<K>();
+				auto key = okey.as<K>();
 				auto it = self.find(key);
 				if (it == deferred_traits::end(L, self)) {
 					return set_associative_insert(is_associative(), L, self, it, key, std::move(value));
@@ -829,7 +829,7 @@ namespace sol {
 			}
 
 			static error_result find_has_associative_lookup(std::true_type, lua_State* L, T& self) {
-				decltype(auto) key = stack::unqualified_get<K>(L, 2);
+				auto key = stack::unqualified_get<K>(L, 2);
 				auto it = self.find(key);
 				if (it == deferred_traits::end(L, self)) {
 					return stack::push(L, lua_nil);
@@ -838,7 +838,7 @@ namespace sol {
 			}
 
 			static error_result find_has_associative_lookup(std::false_type, lua_State* L, T& self) {
-				decltype(auto) value = stack::unqualified_get<V>(L, 2);
+				auto value = stack::unqualified_get<V>(L, 2);
 				auto it = self.find(value);
 				if (it == deferred_traits::end(L, self)) {
 					return stack::push(L, lua_nil);
@@ -863,7 +863,7 @@ namespace sol {
 			}
 
 			static error_result find_comparative(std::true_type, lua_State* L, T& self) {
-				decltype(auto) value = stack::unqualified_get<V>(L, 2);
+				auto && value = stack::unqualified_get<V>(L, 2);
 				auto it = deferred_traits::begin(L, self);
 				auto e = deferred_traits::end(L, self);
 				std::size_t index = 1;
@@ -1208,7 +1208,7 @@ namespace sol {
 				auto& self = get_src(L);
 				error_result er;
 				{
-					decltype(auto) key = stack::unqualified_get<K>(L);
+					auto key = stack::unqualified_get<K>(L);
 					er = get_start(L, self, key);
 				}
 				return handle_errors(L, er);
@@ -1276,7 +1276,7 @@ namespace sol {
 				auto& self = get_src(L);
 				error_result er;
 				{
-					decltype(auto) key = stack::unqualified_get<K>(L, 2);
+					auto key = stack::unqualified_get<K>(L, 2);
 					er = erase_start(L, self, key);
 				}
 				return handle_errors(L, er);
@@ -1345,7 +1345,7 @@ namespace sol {
 
 			static int find(std::true_type, lua_State* L) {
 				T& self = get_src(L);
-				decltype(auto) value = stack::unqualified_get<value_type>(L, 2);
+				auto value = stack::unqualified_get<value_type>(L, 2);
 				std::size_t N = std::extent<T>::value;
 				for (std::size_t idx = 0; idx < N; ++idx) {
 					const auto& v = self[idx];
