@@ -31,9 +31,9 @@
 
 namespace sol {
 	template <typename... Ret, typename... Args>
-	inline auto stack_proxy::call(Args&&... args) -> decltype(stack_function(this->lua_state(), this->stack_index()).template call<Ret...>(std::forward<Args>(args)...)) {
+	inline auto stack_proxy::call(Args&&... args) -> decltype(stack_function(this->lua_state(), this->stack_index()).call<Ret...>(std::forward<Args>(args)...)) {
 		stack_function sf(this->lua_state(), this->stack_index());
-		return sf.template call<Ret...>(std::forward<Args>(args)...);
+		return sf.call<Ret...>(std::forward<Args>(args)...);
 	}
 
 	inline protected_function_result::protected_function_result(unsafe_function_result&& o) noexcept
