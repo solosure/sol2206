@@ -95,45 +95,20 @@ namespace sol {
 			}
 		}
 
-		template <bool raw, typename Ret0, typename Ret1, typename... Ret, std::size_t... I, typename Keys>
-		auto tuple_get(types<Ret0, Ret1, Ret...>, tao::seq::index_sequence<0, 1, I...>, Keys&& keys) const
-			-> decltype(stack::pop<std::tuple<Ret0, Ret1, Ret...>>(nullptr)) {
-			typedef decltype(stack::pop<std::tuple<Ret0, Ret1, Ret...>>(nullptr)) Tup;
-			return Tup(
-				traverse_get_optional<top_level, raw, Ret0>(meta::is_optional<meta::unqualified_t<Ret0>>(), detail::forward_get<0>(keys)),
-				traverse_get_optional<top_level, raw, Ret1>(meta::is_optional<meta::unqualified_t<Ret1>>(), detail::forward_get<1>(keys)),
-				traverse_get_optional<top_level, raw, Ret>(meta::is_optional<meta::unqualified_t<Ret>>(), detail::forward_get<I>(keys))...);
-		}
-
-		template <bool raw, typename Ret, std::size_t I, typename Keys>
-		decltype(auto) tuple_get(types<Ret>, tao::seq::index_sequence<I>, Keys&& keys) const {
-			return traverse_get_optional<top_level, raw, Ret>(meta::is_optional<meta::unqualified_t<Ret>>(), detail::forward_get<I>(keys));
-		}
-
-		template <bool raw, typename Pairs, std::size_t... I>
-		void tuple_set(tao::seq::index_sequence<I...>, Pairs&& pairs) {
-			auto pp = stack::push_pop < top_level && (is_global<decltype(detail::forward_get<I * 2>(pairs))...>::value) > (*this);
-			void(detail::swallow{ (stack::set_field<top_level, raw>(base_t::lua_state(),
-								   detail::forward_get<I * 2>(pairs),
-								   detail::forward_get<I * 2 + 1>(pairs),
-								   lua_gettop(base_t::lua_state())),
-				0)... });
-		}
-
 		template <bool global, bool raw, typename T, typename Key>
-		decltype(auto) traverse_get_deep(Key&& key) const {
+		auto traverse_get_deep(Key&& key) const -> decltype(stack::get<T>(base_t::lua_state())) {
 			stack::get_field<global, raw>(base_t::lua_state(), std::forward<Key>(key));
 			return stack::get<T>(base_t::lua_state());
 		}
 
 		template <bool global, bool raw, typename T, typename Key, typename... Keys>
-		decltype(auto) traverse_get_deep(Key&& key, Keys&&... keys) const {
+		auto traverse_get_deep(Key&& key, Keys&&... keys) const -> decltype(traverse_get_deep<false, raw, T>(std::forward<Keys>(keys)...)) {
 			stack::get_field<global, raw>(base_t::lua_state(), std::forward<Key>(key));
 			return traverse_get_deep<false, raw, T>(std::forward<Keys>(keys)...);
 		}
 
 		template <bool global, bool raw, typename T, std::size_t I, typename Key>
-		decltype(auto) traverse_get_deep_optional(int& popcount, Key&& key) const {
+		auto traverse_get_deep_optional(int& popcount, Key&& key) const -> decltype(stack::get<T>(base_t::lua_state())) {
 			typedef decltype(stack::get<T>(base_t::lua_state())) R;
 			auto p = stack::probe_get_field<global, raw, T>(base_t::lua_state(), std::forward<Key>(key), lua_gettop(base_t::lua_state()));
 			popcount += p.levels;
@@ -143,7 +118,7 @@ namespace sol {
 		}
 
 		template <bool global, bool raw, typename T, std::size_t I, typename Key, typename... Keys>
-		decltype(auto) traverse_get_deep_optional(int& popcount, Key&& key, Keys&&... keys) const {
+		auto traverse_get_deep_optional(int& popcount, Key&& key, Keys&&... keys) const -> decltype(T(nullopt)) {
 			auto p = I > 0 ? stack::probe_get_field<global>(base_t::lua_state(), std::forward<Key>(key), -1) : stack::probe_get_field<global>(base_t::lua_state(), std::forward<Key>(key), lua_gettop(base_t::lua_state()));
 			popcount += p.levels;
 			if (!p.success)
@@ -152,13 +127,13 @@ namespace sol {
 		}
 
 		template <bool global, bool raw, typename T, typename... Keys>
-		decltype(auto) traverse_get_optional(std::false_type, Keys&&... keys) const {
+		auto traverse_get_optional(std::false_type, Keys&&... keys) const -> decltype(traverse_get_deep<global, raw, T>(std::forward<Keys>(keys)...)) {
 			detail::clean<sizeof...(Keys)> c(base_t::lua_state());
 			return traverse_get_deep<global, raw, T>(std::forward<Keys>(keys)...);
 		}
 
 		template <bool global, bool raw, typename T, typename... Keys>
-		decltype(auto) traverse_get_optional(std::true_type, Keys&&... keys) const {
+		auto traverse_get_optional(std::true_type, Keys&&... keys) const -> decltype(traverse_get_deep_optional<global, raw, T, 0>(*(new int(1)), std::forward<Keys>(keys)...)) {
 			int popcount = 0;
 			detail::ref_clean c(base_t::lua_state(), popcount);
 			return traverse_get_deep_optional<global, raw, T, 0>(popcount, std::forward<Keys>(keys)...);
@@ -173,6 +148,31 @@ namespace sol {
 		void traverse_set_deep(Key&& key, Keys&&... keys) const {
 			stack::get_field<global, raw>(base_t::lua_state(), std::forward<Key>(key));
 			traverse_set_deep<false, raw>(std::forward<Keys>(keys)...);
+		}
+
+		template <bool raw, typename Ret0, typename Ret1, typename... Ret, std::size_t... I, typename Keys>
+		auto tuple_get(types<Ret0, Ret1, Ret...>, tao::seq::index_sequence<0, 1, I...>, Keys&& keys) const
+			-> decltype(stack::pop<std::tuple<Ret0, Ret1, Ret...>>(nullptr)) {
+			typedef decltype(stack::pop<std::tuple<Ret0, Ret1, Ret...>>(nullptr)) Tup;
+			return Tup(
+				traverse_get_optional<top_level, raw, Ret0>(meta::is_optional<meta::unqualified_t<Ret0>>(), detail::forward_get<0>(keys)),
+				traverse_get_optional<top_level, raw, Ret1>(meta::is_optional<meta::unqualified_t<Ret1>>(), detail::forward_get<1>(keys)),
+				traverse_get_optional<top_level, raw, Ret>(meta::is_optional<meta::unqualified_t<Ret>>(), detail::forward_get<I>(keys))...);
+		}
+
+		template <bool raw, typename Ret, std::size_t I, typename Keys>
+		auto tuple_get(types<Ret>, tao::seq::index_sequence<I>, Keys&& keys) const -> decltype(traverse_get_optional<top_level, raw, Ret>(meta::is_optional<meta::unqualified_t<Ret>>(), detail::forward_get<I>(keys))) {
+			return traverse_get_optional<top_level, raw, Ret>(meta::is_optional<meta::unqualified_t<Ret>>(), detail::forward_get<I>(keys));
+		}
+
+		template <bool raw, typename Pairs, std::size_t... I>
+		void tuple_set(tao::seq::index_sequence<I...>, Pairs&& pairs) {
+			auto pp = stack::push_pop < top_level && (is_global<decltype(detail::forward_get<I * 2>(pairs))...>::value) >(*this);
+			void(detail::swallow{ (stack::set_field<top_level, raw>(base_t::lua_state(),
+								   detail::forward_get<I * 2>(pairs),
+								   detail::forward_get<I * 2 + 1>(pairs),
+								   lua_gettop(base_t::lua_state())),
+				0)... });
 		}
 
 		basic_table_core(lua_State* L, detail::global_tag t) noexcept
@@ -277,14 +277,14 @@ namespace sol {
 		}
 
 		template <typename... Ret, typename... Keys>
-		decltype(auto) get(Keys&&... keys) const {
+		auto get(Keys&&... keys) const -> decltype(tuple_get<false>(types<Ret...>(), tao::seq::make_index_sequence<sizeof...(Ret)>(), std::forward_as_tuple(std::forward<Keys>(keys)...))) {
 			static_assert(sizeof...(Keys) == sizeof...(Ret), "number of keys and number of return types do not match");
 			auto pp = stack::push_pop<is_global<Keys...>::value>(*this);
 			return tuple_get<false>(types<Ret...>(), tao::seq::make_index_sequence<sizeof...(Ret)>(), std::forward_as_tuple(std::forward<Keys>(keys)...));
 		}
 
 		template <typename T, typename Key>
-		decltype(auto) get_or(Key&& key, T&& otherwise) const {
+		auto get_or(Key&& key, T&& otherwise) const -> decltype(static_cast<decltype(get<T>(""))>(std::forward<T>(otherwise))) {
 			typedef decltype(get<T>("")) U;
 			optional<U> option = get<optional<U>>(std::forward<Key>(key));
 			if (option) {
@@ -294,7 +294,7 @@ namespace sol {
 		}
 
 		template <typename T, typename Key, typename D>
-		decltype(auto) get_or(Key&& key, D&& otherwise) const {
+		auto get_or(Key&& key, D&& otherwise) const -> decltype(static_cast<T>(std::forward<D>(otherwise))) {
 			optional<T> option = get<optional<T>>(std::forward<Key>(key));
 			if (option) {
 				return static_cast<T>(option.value());
@@ -303,7 +303,7 @@ namespace sol {
 		}
 
 		template <typename T, typename... Keys>
-		decltype(auto) traverse_get(Keys&&... keys) const {
+		auto traverse_get(Keys&&... keys) const -> decltype(traverse_get_optional<top_level, false, T>(meta::is_optional<meta::unqualified_t<T>>(), std::forward<Keys>(keys)...)) {
 			auto pp = stack::push_pop<is_global<Keys...>::value>(*this);
 			return traverse_get_optional<top_level, false, T>(meta::is_optional<meta::unqualified_t<T>>(), std::forward<Keys>(keys)...);
 		}
@@ -323,14 +323,14 @@ namespace sol {
 		}
 
 		template <typename... Ret, typename... Keys>
-		decltype(auto) raw_get(Keys&&... keys) const {
+		auto raw_get(Keys&&... keys) const -> decltype(tuple_get<true>(types<Ret...>(), tao::seq::make_index_sequence<sizeof...(Ret)>(), std::forward_as_tuple(std::forward<Keys>(keys)...))) {
 			static_assert(sizeof...(Keys) == sizeof...(Ret), "number of keys and number of return types do not match");
 			auto pp = stack::push_pop<is_global<Keys...>::value>(*this);
 			return tuple_get<true>(types<Ret...>(), tao::seq::make_index_sequence<sizeof...(Ret)>(), std::forward_as_tuple(std::forward<Keys>(keys)...));
 		}
 
 		template <typename T, typename Key>
-		decltype(auto) raw_get_or(Key&& key, T&& otherwise) const {
+		auto raw_get_or(Key&& key, T&& otherwise) const -> decltype(static_cast<decltype(raw_get<T>(""))>(std::forward<T>(otherwise))) {
 			typedef decltype(raw_get<T>("")) U;
 			optional<U> option = raw_get<optional<U>>(std::forward<Key>(key));
 			if (option) {
@@ -340,7 +340,7 @@ namespace sol {
 		}
 
 		template <typename T, typename Key, typename D>
-		decltype(auto) raw_get_or(Key&& key, D&& otherwise) const {
+		auto raw_get_or(Key&& key, D&& otherwise) const -> decltype(static_cast<T>(std::forward<D>(otherwise))) {
 			optional<T> option = raw_get<optional<T>>(std::forward<Key>(key));
 			if (option) {
 				return static_cast<T>(option.value());
@@ -349,7 +349,7 @@ namespace sol {
 		}
 
 		template <typename T, typename... Keys>
-		decltype(auto) traverse_raw_get(Keys&&... keys) const {
+		auto traverse_raw_get(Keys&&... keys) const -> decltype(traverse_get_optional<top_level, true, T>(meta::is_optional<meta::unqualified_t<T>>(), std::forward<Keys>(keys)...)) {
 			auto pp = stack::push_pop<is_global<Keys...>::value>(*this);
 			return traverse_get_optional<top_level, true, T>(meta::is_optional<meta::unqualified_t<T>>(), std::forward<Keys>(keys)...);
 		}
