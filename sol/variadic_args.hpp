@@ -134,7 +134,7 @@ namespace sol {
 		}
 
 		template <typename T>
-		decltype(auto) get(difference_type index_offset = 0) const {
+		auto get(difference_type index_offset = 0) const -> decltype(stack::get<T>(L, index + static_cast<int>(index_offset))) {
 			return stack::get<T>(L, index + static_cast<int>(index_offset));
 		}
 

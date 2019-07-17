@@ -117,23 +117,23 @@ namespace sol {
 #endif // Safety
 		}
 
+		template <typename... Ret, typename... Args>
+		auto call(Args&&... args) const -> decltype(invoke(types<Ret...>(), tao::seq::make_index_sequence<sizeof...(Ret)>(), 1)) {
+			if (!aligned) {
+				base_t::push();
+			}
+			int pushcount = stack::multi_push_reference(lua_state(), std::forward<Args>(args)...);
+			return invoke(types<Ret...>(), tao::seq::make_index_sequence<sizeof...(Ret)>(), pushcount);
+		}
+
 		template <typename... Args>
 		unsafe_function_result operator()(Args&&... args) const {
 			return call<>(std::forward<Args>(args)...);
 		}
 
 		template <typename... Ret, typename... Args>
-		decltype(auto) operator()(types<Ret...>, Args&&... args) const {
+		auto operator()(types<Ret...>, Args&&... args) const -> decltype(call<Ret...>(std::forward<Args>(args)...)) {
 			return call<Ret...>(std::forward<Args>(args)...);
-		}
-
-		template <typename... Ret, typename... Args>
-		decltype(auto) call(Args&&... args) const {
-			if (!aligned) {
-				base_t::push();
-			}
-			int pushcount = stack::multi_push_reference(lua_state(), std::forward<Args>(args)...);
-			return invoke(types<Ret...>(), tao::seq::make_index_sequence<sizeof...(Ret)>(), pushcount);
 		}
 	};
 } // namespace sol
