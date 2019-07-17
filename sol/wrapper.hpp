@@ -41,13 +41,13 @@ namespace sol {
 		typedef typename traits_type::returns_list returns_list;
 
 		template <typename... Args>
-		static decltype(auto) call(F& f, Args&&... args) {
+		static auto call(F& f, Args&&... args) -> decltype(f(std::forward<Args>(args)...)) {
 			return f(std::forward<Args>(args)...);
 		}
 
 		struct caller {
 			template <typename... Args>
-			decltype(auto) operator()(F& fx, Args&&... args) const {
+			auto operator()(F& fx, Args&&... args) const -> decltype(call(fx, std::forward<Args>(args)...)) {
 				return call(fx, std::forward<Args>(args)...);
 			}
 		};
@@ -61,18 +61,18 @@ namespace sol {
 		typedef typename traits_type::returns_list returns_list;
 
 		template <F fx, typename... Args>
-		static decltype(auto) invoke(Args&&... args) {
+		static auto invoke(Args&&... args) -> decltype(fx(std::forward<Args>(args)...)) {
 			return fx(std::forward<Args>(args)...);
 		}
 
 		template <typename... Args>
-		static decltype(auto) call(F& fx, Args&&... args) {
+		static auto call(F& fx, Args&&... args) -> decltype(fx(std::forward<Args>(args)...)) {
 			return fx(std::forward<Args>(args)...);
 		}
 
 		struct caller {
 			template <typename... Args>
-			decltype(auto) operator()(F& fx, Args&&... args) const {
+			auto operator()(F& fx, Args&&... args) const -> decltype(call(fx, std::forward<Args>(args)...)) {
 				return call(fx, std::forward<Args>(args)...);
 			}
 		};
@@ -80,7 +80,7 @@ namespace sol {
 		template <F fx>
 		struct invoker {
 			template <typename... Args>
-			decltype(auto) operator()(Args&&... args) const {
+			auto operator()(Args&&... args) const -> decltype(invoke<fx>(std::forward<Args>(args)...)) {
 				return invoke<fx>(std::forward<Args>(args)...);
 			}
 		};
@@ -101,7 +101,7 @@ namespace sol {
 		}
 
 		template <F fx, typename Arg, typename... Args>
-		static decltype(auto) invoke(object_type& mem, Arg&& arg, Args&&...) {
+		static auto invoke(object_type& mem, Arg&& arg, Args&&...) -> decltype(mem.*fx = std::forward<Arg>(arg)) {
 			return mem.*fx = std::forward<Arg>(arg);
 		}
 
@@ -117,7 +117,7 @@ namespace sol {
 
 		struct caller {
 			template <typename Fx, typename... Args>
-			decltype(auto) operator()(Fx&& fx, object_type& mem, Args&&... args) const {
+			auto operator()(Fx&& fx, object_type& mem, Args&&... args) const -> decltype(call(std::forward<Fx>(fx), mem, std::forward<Args>(args)...)) {
 				return call(std::forward<Fx>(fx), mem, std::forward<Args>(args)...);
 			}
 		};
@@ -125,7 +125,7 @@ namespace sol {
 		template <F fx>
 		struct invoker {
 			template <typename... Args>
-			decltype(auto) operator()(Args&&... args) const {
+			auto operator()(Args&&... args) const -> decltype(invoke<fx>(std::forward<Args>(args)...)) {
 				return invoke<fx>(std::forward<Args>(args)...);
 			}
 		};
@@ -151,7 +151,7 @@ namespace sol {
 
 		struct caller {
 			template <typename Fx, typename... Args>
-			decltype(auto) operator()(Fx&& fx, O& mem, Args&&... args) const {
+			auto operator()(Fx&& fx, O& mem, Args&&... args) const -> decltype(call(std::forward<Fx>(fx), mem, std::forward<Args>(args)...)) {
 				return call(std::forward<Fx>(fx), mem, std::forward<Args>(args)...);
 			}
 		};
@@ -159,7 +159,7 @@ namespace sol {
 		template <F fx>
 		struct invoker {
 			template <typename... Args>
-			decltype(auto) operator()(O& mem, Args&&... args) const {
+			auto operator()(O& mem, Args&&... args) const -> decltype(invoke<fx>(mem, std::forward<Args>(args)...)) {
 				return invoke<fx>(mem, std::forward<Args>(args)...);
 			}
 		};

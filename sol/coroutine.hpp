@@ -218,18 +218,8 @@ namespace sol {
 			return runnable();
 		}
 
-		template <typename... Args>
-		protected_function_result operator()(Args&&... args) {
-			return call<>(std::forward<Args>(args)...);
-		}
-
 		template <typename... Ret, typename... Args>
-		decltype(auto) operator()(types<Ret...>, Args&&... args) {
-			return call<Ret...>(std::forward<Args>(args)...);
-		}
-
-		template <typename... Ret, typename... Args>
-		decltype(auto) call(Args&&... args) {
+		auto call(Args&&... args) -> decltype(invoke(types<Ret...>(), tao::seq::make_index_sequence<sizeof...(Ret)>(), 1)) {
 			// some users screw up coroutine.create
 			// and try to use it with sol::coroutine without ever calling the first resume in Lua
 			// this makes the stack incompatible with other kinds of stacks: protect against this
@@ -237,6 +227,16 @@ namespace sol {
 			base_t::push();
 			int pushcount = stack::multi_push_reference(lua_state(), std::forward<Args>(args)...);
 			return invoke(types<Ret...>(), tao::seq::make_index_sequence<sizeof...(Ret)>(), pushcount);
+		}
+
+		template <typename... Args>
+		protected_function_result operator()(Args&&... args) {
+			return call<>(std::forward<Args>(args)...);
+		}
+
+		template <typename... Ret, typename... Args>
+		auto operator()(types<Ret...>, Args&&... args) -> decltype(call<Ret...>(std::forward<Args>(args)...)) {
+			return call<Ret...>(std::forward<Args>(args)...);
 		}
 	};
 } // namespace sol

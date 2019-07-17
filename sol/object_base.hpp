@@ -33,12 +33,12 @@ namespace sol {
 	class basic_object_base : public base_t {
 	private:
 		template <typename T>
-		decltype(auto) as_stack(std::true_type) const {
+		auto as_stack(std::true_type) const -> decltype(stack::get<T>(base_t::lua_state(), base_t::stack_index())) {
 			return stack::get<T>(base_t::lua_state(), base_t::stack_index());
 		}
 
 		template <typename T>
-		decltype(auto) as_stack(std::false_type) const {
+		auto as_stack(std::false_type) const -> decltype(stack::pop<T>(base_t::lua_state())) {
 			base_t::push();
 			return stack::pop<T>(base_t::lua_state());
 		}
@@ -71,7 +71,7 @@ namespace sol {
 		}
 
 		template <typename T>
-		decltype(auto) as() const {
+		auto as() const -> decltype(as_stack<T>(is_stack_based<base_t>())) {
 			return as_stack<T>(is_stack_based<base_t>());
 		}
 

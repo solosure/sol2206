@@ -440,17 +440,17 @@ namespace sol {
 		}
 
 		template <typename T>
-		decltype(auto) get_key(std::true_type, T&& t) {
+		auto get_key(std::true_type, T&& t) -> decltype(t.first) {
 			return t.first;
 		}
 
 		template <typename T>
-		decltype(auto) get_value(std::false_type, T&& t) {
+		auto get_value(std::false_type, T&& t) -> decltype(std::forward<T>(t)) {
 			return std::forward<T>(t);
 		}
 
 		template <typename T>
-		decltype(auto) get_value(std::true_type, T&& t) {
+		auto get_value(std::true_type, T&& t) -> decltype(t.second) {
 			return t.second;
 		}
 
