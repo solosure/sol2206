@@ -46,22 +46,22 @@ namespace sol {
 		template <typename T>
 		bool has_derived<T>::value = false;
 
-		inline decltype(auto) base_class_check_key() {
+		inline auto base_class_check_key() -> decltype("class_check") {
 			static const auto& key = "class_check";
 			return key;
 		}
 
-		inline decltype(auto) base_class_cast_key() {
+		inline auto base_class_cast_key() -> decltype("class_cast") {
 			static const auto& key = "class_cast";
 			return key;
 		}
 
-		inline decltype(auto) base_class_index_propogation_key() {
+		inline auto base_class_index_propogation_key() -> decltype(u8"\xF0\x9F\x8C\xB2.index") {
 			static const auto& key = u8"\xF0\x9F\x8C\xB2.index";
 			return key;
 		}
 
-		inline decltype(auto) base_class_new_index_propogation_key() {
+		inline auto base_class_new_index_propogation_key() -> decltype(u8"\xF0\x9F\x8C\xB2.new_index") {
 			static const auto& key = u8"\xF0\x9F\x8C\xB2.new_index";
 			return key;
 		}

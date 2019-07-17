@@ -39,7 +39,7 @@ namespace sol {
 		load_status err;
 
 		template <typename T>
-		decltype(auto) tagged_get(types<optional<T>>) const {
+		auto tagged_get(types<optional<T>>) const -> decltype(stack::get<optional<T>>(L, index)) {
 			if (!valid()) {
 				return optional<T>(nullopt);
 			}
@@ -47,7 +47,7 @@ namespace sol {
 		}
 
 		template <typename T>
-		decltype(auto) tagged_get(types<T>) const {
+		auto tagged_get(types<T>) const -> decltype(stack::get<T>(L, index)) {
 #if defined(SOL_SAFE_PROXIES) && SOL_SAFE_PROXIES != 0
 			if (!valid()) {
 				type_panic_c_str(L, index, type_of(L, index), type::none);
@@ -121,7 +121,7 @@ namespace sol {
 		}
 
 		template <typename... Ret, typename... Args>
-		decltype(auto) call(Args&&... args) {
+		auto call(Args&&... args) -> decltype(get<protected_function>().template call<Ret...>(std::forward<Args>(args)...)) {
 #if !defined(__clang__) && defined(_MSC_FULL_VER) && _MSC_FULL_VER >= 191200000
 			// MSVC is ass sometimes
 			return get<protected_function>().call<Ret...>(std::forward<Args>(args)...);
@@ -131,7 +131,7 @@ namespace sol {
 		}
 
 		template <typename... Args>
-		decltype(auto) operator()(Args&&... args) {
+		auto operator()(Args&&... args) -> decltype(call<>(std::forward<Args>(args)...)) {
 			return call<>(std::forward<Args>(args)...);
 		}
 

@@ -486,17 +486,17 @@ namespace sol {
 		}
 
 		template <typename... Args, typename... Keys>
-		decltype(auto) get(Keys&&... keys) const {
+		auto get(Keys&&... keys) const -> decltype(global.get<Args...>(std::forward<Keys>(keys)...)) {
 			return global.get<Args...>(std::forward<Keys>(keys)...);
 		}
 
 		template <typename T, typename Key>
-		decltype(auto) get_or(Key&& key, T&& otherwise) const {
+		auto get_or(Key&& key, T&& otherwise) const -> decltype(global.get_or(std::forward<Key>(key), std::forward<T>(otherwise))) {
 			return global.get_or(std::forward<Key>(key), std::forward<T>(otherwise));
 		}
 
 		template <typename T, typename Key, typename D>
-		decltype(auto) get_or(Key&& key, D&& otherwise) const {
+		auto get_or(Key&& key, D&& otherwise) const -> decltype(global.get_or<T>(std::forward<Key>(key), std::forward<D>(otherwise))) {
 			return global.get_or<T>(std::forward<Key>(key), std::forward<D>(otherwise));
 		}
 
@@ -507,7 +507,7 @@ namespace sol {
 		}
 
 		template <typename T, typename... Keys>
-		decltype(auto) traverse_get(Keys&&... keys) const {
+		auto traverse_get(Keys&&... keys) const -> decltype(global.traverse_get<T>(std::forward<Keys>(keys)...)) {
 			return global.traverse_get<T>(std::forward<Keys>(keys)...);
 		}
 
