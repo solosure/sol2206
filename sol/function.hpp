@@ -30,8 +30,15 @@
 #include <functional>
 
 namespace sol {
-	template <typename... Ret, typename... Args>
+	// sure todo ԭʼ
+	/*template <typename... Ret, typename... Args>
 	inline auto stack_proxy::call(Args&&... args) -> decltype(stack_function(this->lua_state(), this->stack_index()).call<Ret...>(std::forward<Args>(args)...)) {
+		stack_function sf(this->lua_state(), this->stack_index());
+		return sf.call<Ret...>(std::forward<Args>(args)...);
+	}*/
+
+	template <typename... Ret, typename... Args>
+	inline auto stack_proxy::call(Args&&... args) -> decltype(stack::pop<std::tuple<Ret...>>(lua_state())) {
 		stack_function sf(this->lua_state(), this->stack_index());
 		return sf.call<Ret...>(std::forward<Args>(args)...);
 	}
