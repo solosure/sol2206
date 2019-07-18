@@ -36,6 +36,7 @@
 #include "stack_probe.hpp"
 #include <cstring>
 #include <array>
+#include <functional>
 
 namespace sol {
 	namespace detail {
@@ -102,24 +103,21 @@ namespace sol {
 			}
 
 			struct evaluator {
-				template <typename Fx, typename... Args>
-				static auto eval(types<>, tao::seq::index_sequence<>, lua_State*, int, record&, Fx&& fx, Args&&... args)
-					-> decltype(std::forward<Fx>(fx)(std::forward<Args>(args)...))
+				template <typename R, typename Fx, typename... Args>
+				static R eval(types<>, tao::seq::index_sequence<>, lua_State*, int, record&, Fx&& fx, Args&&... args)
 				{
 					return std::forward<Fx>(fx)(std::forward<Args>(args)...);
 				}
 
-				template <typename Fx, typename Arg, typename... Args, std::size_t I, std::size_t... Is, typename... FxArgs>
-				static decltype(auto) eval(types<Arg, Args...>, tao::seq::index_sequence<I, Is...>, lua_State* L, int start, record& tracking, Fx&& fx, FxArgs&&... fxargs)
+				template <typename R, typename Fx, typename Arg, typename... Args, std::size_t I, std::size_t... Is, typename... FxArgs>
+				static R eval(types<Arg, Args...>, tao::seq::index_sequence<I, Is...>, lua_State* L, int start, record& tracking, Fx&& fx, FxArgs&&... fxargs)
 				{
-					//return std::forward<Fx>(fx)(std::forward<FxArgs>(fxargs)..., stack_detail::unchecked_get<Arg>(L, start + tracking.used, tracking));
-					return eval(types<Args...>(), tao::seq::index_sequence<Is...>(), L, start, tracking, std::forward<Fx>(fx), std::forward<FxArgs>(fxargs)..., stack_detail::unchecked_get<Arg>(L, start + tracking.used, tracking));
+					return eval<R>(types<Args...>(), tao::seq::index_sequence<Is...>(), L, start, tracking, std::forward<Fx>(fx), std::forward<FxArgs>(fxargs)..., stack_detail::unchecked_get<Arg>(L, start + tracking.used, tracking));
 				}
 			};
 
 			template <bool checkargs = detail::default_safe_function_calls , std::size_t... I, typename R, typename... Args, typename Fx, typename... FxArgs, typename = tao::enable_if_t<!std::is_void<R>::value >>
-			inline decltype(auto) call(types<R>, types<Args...> ta, tao::seq::index_sequence<I...> tai, lua_State* L, int start, Fx&& fx, FxArgs&&... args)
-				//-> decltype(evaluator{}.eval(ta, tai, L, start, *(new record()), std::forward<Fx>(fx), std::forward<FxArgs>(args)...))
+			inline R call(types<R>, types<Args...> ta, tao::seq::index_sequence<I...> tai, lua_State* L, int start, Fx&& fx, FxArgs&&... args)
 			{
 #ifndef _MSC_VER
 				static_assert(meta::all<meta::is_not_move_only<Args>...>::value, "One of the arguments being bound is a move-only type, and it is not being taken by reference: this will break your code. Please take a reference and std::move it manually if this was your intention.");
@@ -127,7 +125,7 @@ namespace sol {
 				argument_handler<types<R, Args...>> handler{};
 				multi_check<checkargs, Args...>(L, start, handler);
 				record tracking{};
-				return evaluator{}.eval(ta, tai, L, start, tracking, std::forward<Fx>(fx), std::forward<FxArgs>(args)...);
+				return evaluator{}.eval<R>(ta, tai, L, start, tracking, std::forward<Fx>(fx), std::forward<FxArgs>(args)...);
 			}
 
 			template <bool checkargs = detail::default_safe_function_calls, std::size_t... I, typename... Args, typename Fx, typename... FxArgs>
@@ -138,7 +136,7 @@ namespace sol {
 				argument_handler<types<void, Args...>> handler{};
 				multi_check<checkargs, Args...>(L, start, handler);
 				record tracking{};
-				evaluator{}.eval(ta, tai, L, start, tracking, std::forward<Fx>(fx), std::forward<FxArgs>(args)...);
+				evaluator{}.eval<void>(ta, tai, L, start, tracking, std::forward<Fx>(fx), std::forward<FxArgs>(args)...);
 			}
 		} // namespace stack_detail
 
