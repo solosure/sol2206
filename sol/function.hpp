@@ -30,12 +30,31 @@
 #include <functional>
 
 namespace sol {
-	// sure todo
-	/*template <typename... Ret, typename... Args>
-	inline auto stack_proxy::call(Args&&... args) -> decltype(stack_function(this->lua_state(), this->stack_index()).call<Ret...>(std::forward<Args>(args)...)) {
+
+	template <std::size_t... I, typename... Ret, typename... Args>
+	auto stack_proxy::invoke(types<Ret...>, tao::seq::index_sequence<I...>, Args&&... args) const
+		//-> decltype(popper<meta::unqualified_t<T>>{}.pop((lua_State *)1))
+		->decltype(stack::pop<std::tuple<Ret...>>(lua_state()))
+	{
 		stack_function sf(this->lua_state(), this->stack_index());
 		return sf.call<Ret...>(std::forward<Args>(args)...);
-	}*/
+	}
+
+	template <std::size_t I, typename Ret, typename... Args>
+	Ret stack_proxy::invoke(types<Ret>, tao::seq::index_sequence<I>, Args&&... args) const {
+		stack_function sf(this->lua_state(), this->stack_index());
+		return sf.call<Ret>(std::forward<Args>(args)...);
+	}
+
+	template <std::size_t I, typename... Args>
+	void stack_proxy::invoke(types<void>, tao::seq::index_sequence<I>, Args&&... args) const {
+	}
+
+	template <typename... Args>
+	protected_function_result stack_proxy::invoke(types<>, tao::seq::index_sequence<>, Args&&... args) const {
+		stack_function sf(this->lua_state(), this->stack_index());
+		return sf.call<>(std::forward<Args>(args)...);
+	}
 
 	inline protected_function_result::protected_function_result(unsafe_function_result&& o) noexcept
 	: L(o.lua_state()), index(o.stack_index()), returncount(o.return_count()), popcount(o.return_count()), err(o.status()) {
