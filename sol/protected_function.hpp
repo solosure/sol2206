@@ -54,7 +54,7 @@ namespace sol {
 		}
 
 		template <std::size_t... I, bool b, typename... Ret>
-		auto invoke(types<Ret...>, tao::seq::index_sequence<I...>, std::ptrdiff_t n, detail::protected_handler<b, handler_t>& h) const {
+		auto invoke(types<Ret...>, tao::seq::index_sequence<I...>, std::ptrdiff_t n, detail::protected_handler<b, handler_t>& h) const -> decltype(stack::pop<std::tuple<Ret...>>(this->lua_state())) {
 			luacall(n, sizeof...(Ret), h);
 			return stack::pop<std::tuple<Ret...>>(lua_state());
 		}

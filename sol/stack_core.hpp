@@ -777,7 +777,7 @@ namespace sol {
 		}
 
 		template <typename T, typename Handler>
-		inline auto unqualified_check_get(lua_State* L, int index, Handler&& handler) -> decltype(unqualified_check_get<T>(L, index, handler, *(new record()))) {
+		inline auto unqualified_check_get(lua_State* L, int index, Handler&& handler) -> decltype(check_getter<meta::unqualified_t<T>>().get(L, index, std::forward<Handler>(handler), *(new record()))) {
 			record tracking{};
 			return unqualified_check_get<T>(L, index, handler, tracking);
 		}
@@ -796,13 +796,13 @@ namespace sol {
 		}
 
 		template <typename T, typename Handler>
-		inline auto check_get(lua_State* L, int index, Handler&& handler) -> decltype(check_get<T>(L, index, handler, *(new record()))) {
+		inline auto check_get(lua_State* L, int index, Handler&& handler) -> decltype(qualified_check_getter<T>().get(L, index, std::forward<Handler>(handler), *(new record()))) {
 			record tracking{};
 			return check_get<T>(L, index, handler, tracking);
 		}
 
 		template <typename T>
-		inline auto check_get(lua_State* L, int index = -lua_size<meta::unqualified_t<T>>::value) -> decltype(check_get<T>(L, index, no_panic)) {
+		inline auto check_get(lua_State* L, int index = -lua_size<meta::unqualified_t<T>>::value) -> decltype(qualified_check_getter<T>().get(L, index, no_panic, *(new record()))) {
 			auto handler = no_panic;
 			return check_get<T>(L, index, handler);
 		}
@@ -942,7 +942,7 @@ namespace sol {
 		}
 
 		template <typename T>
-		inline auto unqualified_get(lua_State* L, int index = -lua_size<meta::unqualified_t<T>>::value) -> decltype(unqualified_get<T>(L, index, *(new record()))) {
+		inline auto unqualified_get(lua_State* L, int index = -lua_size<meta::unqualified_t<T>>::value) -> decltype(stack_detail::tagged_unqualified_get(types<T>(), L, index, *(new record()))) {
 			record tracking{};
 			return unqualified_get<T>(L, index, tracking);
 		}
