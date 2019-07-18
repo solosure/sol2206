@@ -953,7 +953,7 @@ namespace sol {
 		}
 
 		template <typename T>
-		inline auto get(lua_State* L, int index = -lua_size<meta::unqualified_t<T>>::value) -> decltype(get<T>(L, index, *(new record()))) {
+		inline auto get(lua_State* L, int index = -lua_size<meta::unqualified_t<T>>::value) -> decltype(stack_detail::tagged_get(types<T>(), L, index, *(new record()))) {
 			record tracking{};
 			return get<T>(L, index, tracking);
 		}

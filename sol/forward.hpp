@@ -65,7 +65,7 @@ namespace sol {
 	using environment = basic_environment<reference>;
 	using main_environment = basic_environment<main_reference>;
 	using stack_environment = basic_environment<stack_reference>;
-	template <typename T, bool>
+	template <typename T, bool = false>
 	class basic_function;
 	template <typename T, bool, typename H>
 	class basic_protected_function;
@@ -95,12 +95,6 @@ namespace sol {
 
 	struct unsafe_function_result;
 	struct protected_function_result;
-	using safe_function_result = protected_function_result;
-#if defined(SOL_SAFE_FUNCTION) && SOL_SAFE_FUNCTION
-	using function_result = safe_function_result;
-#else
-	using function_result = unsafe_function_result;
-#endif
 
 	template <typename base_t>
 	class basic_object;

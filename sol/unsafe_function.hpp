@@ -31,7 +31,7 @@
 #include <cstdint>
 
 namespace sol {
-	template <typename base_t, bool aligned = false>
+	template <typename base_t, bool aligned>
 	class basic_function : public base_t {
 	private:
 		void luacall(std::ptrdiff_t argcount, std::ptrdiff_t resultcount) const {
