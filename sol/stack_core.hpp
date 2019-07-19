@@ -922,7 +922,8 @@ namespace sol {
 		}
 
 		template <typename T>
-		inline auto get_usertype(lua_State* L, int index, record& tracking) -> decltype(stack_detail::tagged_get(types<tao::conditional_t<std::is_pointer<T>::value, detail::as_pointer_tag<tao::remove_pointer_t<T>>, detail::as_value_tag<T>>>(), L, index, tracking)) {
+		inline auto get_usertype(lua_State* L, int index, record& tracking)
+			-> decltype(stack_detail::tagged_get(types<tao::conditional_t<std::is_pointer<T>::value, detail::as_pointer_tag<tao::remove_pointer_t<T>>, detail::as_value_tag<T>>>(), L, index, tracking)) {
 #if defined(SOL_SAFE_GETTER) && SOL_SAFE_GETTER
 			return stack_detail::tagged_get(types<tao::conditional_t<std::is_pointer<T>::value, detail::as_pointer_tag<tao::remove_pointer_t<T>>, detail::as_value_tag<T>>>(), L, index, tracking);
 #else
@@ -931,7 +932,8 @@ namespace sol {
 		}
 
 		template <typename T>
-		inline auto get_usertype(lua_State* L, int index = -lua_size<meta::unqualified_t<T>>::value) -> decltype(get_usertype<T>(L, index, *(new record()))) {
+		inline auto get_usertype(lua_State* L, int index = -lua_size<meta::unqualified_t<T>>::value)
+			-> decltype(stack_detail::tagged_get(types<tao::conditional_t<std::is_pointer<T>::value, detail::as_pointer_tag<tao::remove_pointer_t<T>>, detail::as_value_tag<T>>>(), L, index, *(new record()))) {
 			record tracking{};
 			return get_usertype<T>(L, index, tracking);
 		}
