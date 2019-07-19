@@ -284,7 +284,7 @@ namespace sol {
 		}
 
 		template <typename T, typename Key>
-		auto get_or(Key&& key, T&& otherwise) const -> decltype(static_cast<decltype(get<T>(""))>(std::forward<T>(otherwise))) {
+		auto get_or(Key&& key, T&& otherwise) const -> decltype(static_cast<decltype(get<T>((char *)nullptr))>(std::forward<T>(otherwise))) {
 			typedef decltype(get<T>("")) U;
 			optional<U> option = get<optional<U>>(std::forward<Key>(key));
 			if (option) {
