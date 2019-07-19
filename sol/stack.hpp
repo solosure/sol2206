@@ -103,41 +103,17 @@ namespace sol {
 			}
 
 			struct evaluator {
-				/*template <typename R, typename Fx, typename... Args>
-				static decltype(auto) eval(void *, types<>, tao::seq::index_sequence<>, lua_State*, int, record&, Fx&& fx, Args&&... args)
-				{
-					return std::forward<Fx>(fx)(std::forward<Args>(args)...);
-				}*/
 
-				template <typename R, typename Fx, typename... Args, typename std::enable_if<std::is_void<R>::value, int>::type = 0>
-				static void eval(types<>, tao::seq::index_sequence<>, lua_State*, int, record&, Fx&& fx, Args&&... args)
-				{
-					return std::forward<Fx>(fx)(std::forward<Args>(args)...);
-				}
-
-				template <typename R, typename Fx, typename... Args, typename std::enable_if<!std::is_void<R>::value, int>::type = 0>
+				template <typename Fx, typename... Args>
 				static decltype(auto) eval(types<>, tao::seq::index_sequence<>, lua_State*, int, record&, Fx&& fx, Args&&... args)
 				{
 					return std::forward<Fx>(fx)(std::forward<Args>(args)...);
 				}
-				
-				/*template <typename R, typename Fx, typename... Args>
-				static decltype(auto) eval(typename std::enable_if<!std::is_void<tao::decay_t<R>>::value, R>::type *, types<>, tao::seq::index_sequence<>, lua_State*, int, record&, Fx&& fx, Args&&... args)
-				{
-					decltype(auto) r = std::forward<Fx>(fx)(std::forward<Args>(args)...);
-					return r;
-				}
 
-				template <typename R, typename Fx, typename... Args>
-				static void eval(typename std::enable_if<std::is_void<R>::value, R>::type *, types<>, tao::seq::index_sequence<>, lua_State*, int, record&, Fx&& fx, Args&&... args)
+				template <typename Fx, typename Arg, typename... Args, std::size_t I, std::size_t... Is, typename... FxArgs>
+				static decltype(auto) eval(types<Arg, Args...> ta, tao::seq::index_sequence<I, Is...> tai, lua_State* L, int start, record& tracking, Fx&& fx, FxArgs&&... fxargs)
 				{
-					return std::forward<Fx>(fx)(std::forward<Args>(args)...);
-				}*/
-
-				template <typename R, typename Fx, typename Arg, typename... Args, std::size_t I, std::size_t... Is, typename... FxArgs>
-				static decltype(auto) eval(types<Arg, Args...>, tao::seq::index_sequence<I, Is...>, lua_State* L, int start, record& tracking, Fx&& fx, FxArgs&&... fxargs)
-				{
-					return eval<R>(types<Args...>(), tao::seq::index_sequence<Is...>(), L, start, tracking, std::forward<Fx>(fx), std::forward<FxArgs>(fxargs)..., stack_detail::unchecked_get<Arg>(L, start + tracking.used, tracking));
+					return eval(types<Args...>(), tao::seq::index_sequence<Is...>(), L, start, tracking, std::forward<Fx>(fx), std::forward<FxArgs>(fxargs)..., stack_detail::unchecked_get<Arg>(L, start + tracking.used, tracking));
 				}
 			};
 
@@ -150,7 +126,7 @@ namespace sol {
 				argument_handler<types<R, Args...>> handler{};
 				multi_check<checkargs, Args...>(L, start, handler);
 				record tracking{};
-				return evaluator{}.eval<R>(ta, tai, L, start, tracking, std::forward<Fx>(fx), std::forward<FxArgs>(args)...);
+				return evaluator{}.eval(ta, tai, L, start, tracking, std::forward<Fx>(fx), std::forward<FxArgs>(args)...);
 			}
 
 			template <bool checkargs = detail::default_safe_function_calls, std::size_t... I, typename... Args, typename Fx, typename... FxArgs>
@@ -161,7 +137,7 @@ namespace sol {
 				argument_handler<types<void, Args...>> handler{};
 				multi_check<checkargs, Args...>(L, start, handler);
 				record tracking{};
-				evaluator{}.eval<void>(ta, tai, L, start, tracking, std::forward<Fx>(fx), std::forward<FxArgs>(args)...);
+				evaluator{}.eval(ta, tai, L, start, tracking, std::forward<Fx>(fx), std::forward<FxArgs>(args)...);
 			}
 		} // namespace stack_detail
 
