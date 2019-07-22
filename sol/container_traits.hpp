@@ -1317,7 +1317,7 @@ namespace sol {
 			typedef container_traits<X> deferred_traits;
 
 		public:
-			typedef std::remove_extent_t<T> value_type;
+			typedef tao::remove_extent_t<T> value_type;
 			typedef value_type* iterator;
 
 		private:
