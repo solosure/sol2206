@@ -1,4 +1,4 @@
-// sol2 
+// sol2
 
 // The MIT License (MIT)
 
@@ -105,20 +105,147 @@ namespace sol {
 			struct evaluator {
 
 				template <typename Fx, typename... Args>
-				static decltype(auto) eval(types<>, tao::seq::index_sequence<>, lua_State*, int, record&, Fx&& fx, Args&&... args)
+				static auto eval(types<>, tao::seq::index_sequence<>, lua_State*, int, record&, Fx&& fx, Args&&... args)
+					-> decltype(std::forward<Fx>(fx)(std::forward<Args>(args)...))
 				{
 					return std::forward<Fx>(fx)(std::forward<Args>(args)...);
 				}
 
-				template <typename Fx, typename Arg, typename... Args, std::size_t I, std::size_t... Is, typename... FxArgs>
-				static decltype(auto) eval(types<Arg, Args...> ta, tao::seq::index_sequence<I, Is...> tai, lua_State* L, int start, record& tracking, Fx&& fx, FxArgs&&... fxargs)
+				template <typename Fx, typename Arg0, std::size_t I, typename... FxArgs>
+				static auto eval(types<Arg0> ta, tao::seq::index_sequence<I> tai,
+					lua_State* L, int start, record& tracking, Fx&& fx, FxArgs&&... fxargs)
+					-> decltype(eval(types<>(), tao::seq::index_sequence<>(),
+						L, start, tracking, std::forward<Fx>(fx), std::forward<FxArgs>(fxargs)...,
+						stack_detail::unchecked_get<Arg0>(L, start + tracking.used, tracking)))
 				{
-					return eval(types<Args...>(), tao::seq::index_sequence<Is...>(), L, start, tracking, std::forward<Fx>(fx), std::forward<FxArgs>(fxargs)..., stack_detail::unchecked_get<Arg>(L, start + tracking.used, tracking));
+					return eval(types<>(), tao::seq::index_sequence<>(),
+						L, start, tracking, std::forward<Fx>(fx), std::forward<FxArgs>(fxargs)...,
+						stack_detail::unchecked_get<Arg0>(L, start + tracking.used, tracking)
+					);
+				}
+
+				template <typename Fx, typename Arg0, typename Arg1, std::size_t I0, std::size_t I1, typename... FxArgs>
+				static auto eval(types<Arg0, Arg1> ta, tao::seq::index_sequence<I0, I1> tai, lua_State* L, int start, record& tracking, Fx&& fx, FxArgs&&... fxargs)
+					-> decltype(eval(types<>(), tao::seq::index_sequence<>(),
+						L, start, tracking, std::forward<Fx>(fx), std::forward<FxArgs>(fxargs)...,
+						stack_detail::unchecked_get<Arg0>(L, start + tracking.used, tracking),
+						stack_detail::unchecked_get<Arg1>(L, start + tracking.used, tracking)
+					))
+				{
+					auto&& L0 = stack_detail::unchecked_get<Arg0>(L, start + tracking.used, tracking);
+					auto&& L1 = stack_detail::unchecked_get<Arg1>(L, start + tracking.used, tracking);
+
+					return eval(types<>(), tao::seq::index_sequence<>(),
+						L, start, tracking, std::forward<Fx>(fx), std::forward<FxArgs>(fxargs)...,
+						L0, L1);
+				}
+
+				template <typename Fx, typename Arg0, typename Arg1, typename Arg2,
+					std::size_t I0, std::size_t I1, std::size_t I2,
+					typename... FxArgs>
+					static auto eval(types<Arg0, Arg1, Arg2> ta,
+						tao::seq::index_sequence<I0, I1, I2> tai,
+						lua_State* L, int start, record& tracking, Fx&& fx, FxArgs&&... fxargs)
+					-> decltype(eval(types<>(), tao::seq::index_sequence<>(),
+						L, start, tracking, std::forward<Fx>(fx), std::forward<FxArgs>(fxargs)...,
+						stack_detail::unchecked_get<Arg0>(L, start + tracking.used, tracking),
+						stack_detail::unchecked_get<Arg1>(L, start + tracking.used, tracking),
+						stack_detail::unchecked_get<Arg2>(L, start + tracking.used, tracking)
+					))
+				{
+					auto&& L0 = stack_detail::unchecked_get<Arg0>(L, start + tracking.used, tracking);
+					auto&& L1 = stack_detail::unchecked_get<Arg1>(L, start + tracking.used, tracking);
+					auto&& L2 = stack_detail::unchecked_get<Arg2>(L, start + tracking.used, tracking);
+
+					return eval(types<>(), tao::seq::index_sequence<>(),
+						L, start, tracking, std::forward<Fx>(fx), std::forward<FxArgs>(fxargs)...,
+						L0, L1, L2);
+				}
+
+				template <typename Fx,
+					typename Arg0, typename Arg1, typename Arg2, typename Arg3,
+					std::size_t I0, std::size_t I1, std::size_t I2, std::size_t I3,
+					typename... FxArgs>
+					static auto eval(types<Arg0, Arg1, Arg2, Arg3> ta,
+						tao::seq::index_sequence<I0, I1, I2, I3> tai,
+						lua_State* L, int start, record& tracking, Fx&& fx, FxArgs&&... fxargs)
+					-> decltype(eval(types<>(), tao::seq::index_sequence<>(),
+						L, start, tracking, std::forward<Fx>(fx), std::forward<FxArgs>(fxargs)...,
+						stack_detail::unchecked_get<Arg0>(L, start + tracking.used, tracking),
+						stack_detail::unchecked_get<Arg1>(L, start + tracking.used, tracking),
+						stack_detail::unchecked_get<Arg2>(L, start + tracking.used, tracking),
+						stack_detail::unchecked_get<Arg3>(L, start + tracking.used, tracking)
+					))
+				{
+					auto&& L0 = stack_detail::unchecked_get<Arg0>(L, start + tracking.used, tracking);
+					auto&& L1 = stack_detail::unchecked_get<Arg1>(L, start + tracking.used, tracking);
+					auto&& L2 = stack_detail::unchecked_get<Arg2>(L, start + tracking.used, tracking);
+					auto&& L3 = stack_detail::unchecked_get<Arg3>(L, start + tracking.used, tracking);
+
+					return eval(types<>(), tao::seq::index_sequence<>(),
+						L, start, tracking, std::forward<Fx>(fx), std::forward<FxArgs>(fxargs)...,
+						L0, L1, L2, L3);
+				}
+
+				template <typename Fx,
+					typename Arg0, typename Arg1, typename Arg2, typename Arg3, typename Arg4,
+					std::size_t I0, std::size_t I1, std::size_t I2, std::size_t I3, std::size_t I4,
+					typename... FxArgs>
+					static auto eval(types<Arg0, Arg1, Arg2, Arg3, Arg4> ta,
+						tao::seq::index_sequence<I0, I1, I2, I3, I4> tai,
+						lua_State* L, int start, record& tracking, Fx&& fx, FxArgs&&... fxargs)
+					-> decltype(eval(types<>(), tao::seq::index_sequence<>(),
+						L, start, tracking, std::forward<Fx>(fx), std::forward<FxArgs>(fxargs)...,
+						stack_detail::unchecked_get<Arg0>(L, start + tracking.used, tracking),
+						stack_detail::unchecked_get<Arg1>(L, start + tracking.used, tracking),
+						stack_detail::unchecked_get<Arg2>(L, start + tracking.used, tracking),
+						stack_detail::unchecked_get<Arg3>(L, start + tracking.used, tracking),
+						stack_detail::unchecked_get<Arg4>(L, start + tracking.used, tracking)
+					))
+				{
+					auto&& L0 = stack_detail::unchecked_get<Arg0>(L, start + tracking.used, tracking);
+					auto&& L1 = stack_detail::unchecked_get<Arg1>(L, start + tracking.used, tracking);
+					auto&& L2 = stack_detail::unchecked_get<Arg2>(L, start + tracking.used, tracking);
+					auto&& L3 = stack_detail::unchecked_get<Arg3>(L, start + tracking.used, tracking);
+					auto&& L4 = stack_detail::unchecked_get<Arg4>(L, start + tracking.used, tracking);
+
+					return eval(types<>(), tao::seq::index_sequence<>(),
+						L, start, tracking, std::forward<Fx>(fx), std::forward<FxArgs>(fxargs)...,
+						L0, L1, L2, L3, L4);
+				}
+				template <typename Fx,
+					typename Arg0, typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Arg5,
+					std::size_t I0, std::size_t I1, std::size_t I2, std::size_t I3, std::size_t I4, std::size_t I5,
+					typename... FxArgs>
+					static auto eval(types<Arg0, Arg1, Arg2, Arg3, Arg4, Arg5> ta,
+						tao::seq::index_sequence<I0, I1, I2, I3, I4, I5> tai,
+						lua_State* L, int start, record& tracking, Fx&& fx, FxArgs&&... fxargs)
+					-> decltype(eval(types<>(), tao::seq::index_sequence<>(),
+						L, start, tracking, std::forward<Fx>(fx), std::forward<FxArgs>(fxargs)...,
+						stack_detail::unchecked_get<Arg0>(L, start + tracking.used, tracking),
+						stack_detail::unchecked_get<Arg1>(L, start + tracking.used, tracking),
+						stack_detail::unchecked_get<Arg2>(L, start + tracking.used, tracking),
+						stack_detail::unchecked_get<Arg3>(L, start + tracking.used, tracking),
+						stack_detail::unchecked_get<Arg4>(L, start + tracking.used, tracking),
+						stack_detail::unchecked_get<Arg5>(L, start + tracking.used, tracking)
+					))
+				{
+					auto&& L0 = stack_detail::unchecked_get<Arg0>(L, start + tracking.used, tracking);
+					auto&& L1 = stack_detail::unchecked_get<Arg1>(L, start + tracking.used, tracking);
+					auto&& L2 = stack_detail::unchecked_get<Arg2>(L, start + tracking.used, tracking);
+					auto&& L3 = stack_detail::unchecked_get<Arg3>(L, start + tracking.used, tracking);
+					auto&& L4 = stack_detail::unchecked_get<Arg4>(L, start + tracking.used, tracking);
+					auto&& L5 = stack_detail::unchecked_get<Arg5>(L, start + tracking.used, tracking);
+
+					return eval(types<>(), tao::seq::index_sequence<>(),
+						L, start, tracking, std::forward<Fx>(fx), std::forward<FxArgs>(fxargs)...,
+						L0, L1, L2, L3, L4, L5);
 				}
 			};
 
-			template <bool checkargs = detail::default_safe_function_calls , std::size_t... I, typename R, typename... Args, typename Fx, typename... FxArgs, typename = tao::enable_if_t<!std::is_void<R>::value >>
-			inline decltype(auto) call(types<R>, types<Args...> ta, tao::seq::index_sequence<I...> tai, lua_State* L, int start, Fx&& fx, FxArgs&&... args)
+			template <bool checkargs = detail::default_safe_function_calls, std::size_t... I, typename R, typename... Args, typename Fx, typename... FxArgs, typename = tao::enable_if_t<!std::is_void<R>::value>>
+			inline auto call(types<R>, types<Args...> ta, tao::seq::index_sequence<I...> tai, lua_State* L, int start, Fx&& fx, FxArgs&&... args)
+				-> decltype(evaluator{}.eval(ta, tai, L, start, *(new record()), std::forward<Fx>(fx), std::forward<FxArgs>(args)...))
 			{
 #ifndef _MSC_VER
 				static_assert(meta::all<meta::is_not_move_only<Args>...>::value, "One of the arguments being bound is a move-only type, and it is not being taken by reference: this will break your code. Please take a reference and std::move it manually if this was your intention.");
@@ -148,16 +275,16 @@ namespace sol {
 		}
 
 		template <bool check_args = detail::default_safe_function_calls, typename R, typename... Args, typename Fx, typename... FxArgs, typename = tao::enable_if_t<!std::is_void<R>::value>>
-		inline decltype(auto) call(types<R> tr, types<Args...> ta, lua_State* L, int start, Fx&& fx, FxArgs&&... args)
-			//-> decltype(stack_detail::call<check_args>(tr, ta, tao::seq::make_index_sequence<sizeof...(Args)>(), L, start, std::forward<Fx>(fx), std::forward<FxArgs>(args)...))
+		inline auto call(types<R> tr, types<Args...> ta, lua_State* L, int start, Fx&& fx, FxArgs&&... args)
+			-> decltype(stack_detail::call<check_args>(tr, ta, tao::seq::make_index_sequence<sizeof...(Args)>(), L, start, std::forward<Fx>(fx), std::forward<FxArgs>(args)...))
 		{
 			typedef tao::seq::make_index_sequence<sizeof...(Args)> args_indices;
 			return stack_detail::call<check_args>(tr, ta, args_indices(), L, start, std::forward<Fx>(fx), std::forward<FxArgs>(args)...);
 		}
 
 		template <bool check_args = detail::default_safe_function_calls, typename R, typename... Args, typename Fx, typename... FxArgs, typename = tao::enable_if_t<!std::is_void<R>::value>>
-		inline decltype(auto) call(types<R> tr, types<Args...> ta, lua_State* L, Fx&& fx, FxArgs&&... args)
-			//-> decltype(call<check_args>(tr, ta, L, 1, std::forward<Fx>(fx), std::forward<FxArgs>(args)...))
+		inline auto call(types<R> tr, types<Args...> ta, lua_State* L, Fx&& fx, FxArgs&&... args) 
+			-> decltype(call<check_args>(tr, ta, L, 1, std::forward<Fx>(fx), std::forward<FxArgs>(args)...))
 		{
 			return call<check_args>(tr, ta, L, 1, std::forward<Fx>(fx), std::forward<FxArgs>(args)...);
 		}
@@ -196,7 +323,7 @@ namespace sol {
 
 		template <bool check_args = detail::default_safe_function_calls, bool clean_stack = true, typename Ret0, typename... Ret, typename... Args, typename Fx, typename... FxArgs, typename = tao::enable_if_t<meta::neg<std::is_void<Ret0>>::value>>
 		inline int call_into_lua(types<Ret0, Ret...>, types<Args...> ta, lua_State* L, int start, Fx&& fx, FxArgs&&... fxargs) {
-			auto && r = call<check_args>(types<meta::return_type_t<Ret0, Ret...>>(), ta, L, start, std::forward<Fx>(fx), std::forward<FxArgs>(fxargs)...);
+			auto&& r = call<check_args>(types<meta::return_type_t<Ret0, Ret...>>(), ta, L, start, std::forward<Fx>(fx), std::forward<FxArgs>(fxargs)...);
 			typedef meta::unqualified_t<decltype(r)> R;
 			typedef meta::any<is_stack_based<R>,
 				std::is_same<R, absolute_index>,
